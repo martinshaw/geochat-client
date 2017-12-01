@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GeoChat</string>
+    <string name="gc_main_toolbar_maptoggle">Passer à la carte</string>
+    <string name="gc_main_toolbar_alerttoggle">Silence et restaurer le son d\'alerte</string>
+    <string name="geochat_logo">Logo de GeoChat</string>
+    <string name="regist_placeholder_email">Adresse e-mail</string>
+    <string name="regist_placeholder_password">Mot de passe</string>
+    <string name="regist_placeholder_firstname">Prénom</string>
+    <string name="regist_placeholder_lastname">Nom de famille</string>
+    <string name="regist_bottomsheet_header">Nouveau sur GeoChat? Créer un compte …</string>
+    <string name="regist_create_account_button">Continuer …</string>
+    <string name="regist_welcome">Bienvenue sur GeoChat!</string>
+</resources>

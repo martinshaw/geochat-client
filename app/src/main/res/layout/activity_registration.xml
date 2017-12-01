@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="co.martinshaw.apps.android.geochat.RegistrationActivity"
+    android:background="@drawable/regist_gradient"
+
+    android:elevation="2dp"
+    >
+
+    <LinearLayout
+        android:id="@+id/regist_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/regist_logo"
+            android:layout_marginBottom="19dp"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            app:srcCompat="@drawable/geochat_logo"
+            android:contentDescription="@string/geochat_logo"/>
+
+        <TextView
+            android:id="@+id/regist_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="100dp"
+            android:fontFamily="@font/hind_light"
+            android:gravity="center"
+            android:text="@string/regist_welcome"
+            android:textAlignment="center"
+            android:textColor="@color/md_grey_800"
+            android:textSize="20pt"
+            android:lines="2"
+            android:lineSpacingExtra="-12dp"
+            android:elevation="2dp"
+            />
+
+    </LinearLayout>
+
+    <!-- include registration bottom sheet -->
+    <include layout="@layout/component_regist_bottomsheet" />
+
+
+
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GeoChat</string>
+    <string name="gc_main_toolbar_maptoggle">切换到地图</string>
+    <string name="gc_main_toolbar_alerttoggle">切换到没有警报声</string>
+    <string name="geochat_logo">GeoChat的公司形象</string>
+    <string name="regist_placeholder_email">电子邮件地址</string>
+    <string name="regist_placeholder_password">密码</string>
+    <string name="regist_placeholder_firstname">名字</string>
+    <string name="regist_placeholder_lastname">姓</string>
+    <string name="regist_bottomsheet_header">新用户？开始一个帐户 …</string>
+    <string name="regist_create_account_button">开始一个帐户 …</string>
+    <string name="regist_welcome">欢迎 GeoChat！</string>
+</resources>

@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">GeoChat</string>
+    <string name="gc_main_toolbar_maptoggle">Map Toggle</string>
+    <string name="gc_main_toolbar_alerttoggle">Notification &amp; Alert Sound Toggle</string>
+    <string name="geochat_logo">GeoChat Logo</string>
+    <string name="regist_placeholder_email">E-mail address</string>
+    <string name="regist_placeholder_password">Password</string>
+    <string name="regist_bottomsheet_header">New User? Create an account …</string>
+    <string name="regist_placeholder_firstname">First Name</string>
+    <string name="regist_placeholder_lastname">Last Name</string>
+    <string name="regist_create_account_button">Create account …</string>
+    <string name="regist_welcome">Welcome to GeoChat!</string>
+</resources>

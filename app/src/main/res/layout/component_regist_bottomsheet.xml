@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/regist_bottomsheet_root"
+    android:layout_width="match_parent"
+    android:layout_height="500dp"
+    android:background="@android:color/darker_gray"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:elevation="16dp"
+
+
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <LinearLayout
+        android:id="@+id/regist_bottomsheet_handle"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:elevation="2dp"
+        android:background="@drawable/main_drawer_background_gradient"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        >
+
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="@string/regist_bottomsheet_header"
+            android:textColor="@android:color/white"
+            android:fontFamily="@font/hind_light"
+            android:textSize="9pt"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="420dp"
+        android:background="@color/md_white_1000"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="20dp">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/regist_bottomsheet_form_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:textSize="18sp"
+            android:hint="@string/regist_placeholder_email"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/geochatAccent"
+            android:theme="@style/RegistrationTextField" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/regist_bottomsheet_form_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textSize="18sp"
+            android:hint="@string/regist_placeholder_password"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/geochatAccent"
+            android:theme="@style/RegistrationTextField" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/regist_bottomsheet_form_firstname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textSize="18sp"
+            android:hint="@string/regist_placeholder_firstname"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/geochatAccent"
+            android:theme="@style/RegistrationTextField" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/regist_bottomsheet_form_lastname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textSize="18sp"
+            android:hint="@string/regist_placeholder_lastname"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/geochatAccent"
+            android:theme="@style/RegistrationTextField" />
+
+        <Button android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/regist_create_account_button">
+
+        </Button>
+
+    </LinearLayout>
+
+
+</LinearLayout>

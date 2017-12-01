@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@color/md_grey_50"/>
+
+    <item
+        android:gravity="center"
+        android:height="417px"
+        android:width="470px"
+        android:bottom="200dp"
+        android:drawable="@drawable/geochat_logo">
+    </item>
+
+</layer-list>

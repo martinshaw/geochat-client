@@ -10,4 +10,7 @@
     <string name="regist_placeholder_lastname">Last Name</string>
     <string name="regist_create_account_button">Create account …</string>
     <string name="regist_welcome">Welcome to GeoChat!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

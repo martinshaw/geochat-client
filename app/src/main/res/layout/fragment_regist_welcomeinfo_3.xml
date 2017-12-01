@@ -1,0 +1,37 @@
+<LinearLayout
+    android:id="@+id/regist_welcomeinfo_3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/regist_logo"
+        android:layout_marginBottom="19dp"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        app:srcCompat="@drawable/geochat_logo"
+        android:contentDescription="@string/geochat_logo"/>
+
+    <TextView
+        android:id="@+id/regist_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="100dp"
+        android:fontFamily="@font/hind_light"
+        android:gravity="center"
+        android:text="def"
+        android:textAlignment="center"
+        android:textColor="@color/md_grey_800"
+        android:textSize="20pt"
+        android:lines="2"
+        android:lineSpacingExtra="-12dp"
+        android:elevation="2dp"
+        />
+
+</LinearLayout>

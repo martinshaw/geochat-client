@@ -7,7 +7,7 @@ import android.view.View;
 
 public class SplashscreenActivity extends AppCompatActivity {
 
-    Boolean loggedIn = false;
+    Boolean loggedIn = true;
     Intent intent;
 
     @Override

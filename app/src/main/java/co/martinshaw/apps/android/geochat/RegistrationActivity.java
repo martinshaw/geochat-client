@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -43,6 +44,9 @@ public class RegistrationActivity extends AppCompatActivity implements
     private PagerAdapter mPagerAdapter;
 
 
+    BottomSheetBehavior bottomSheetBehavior;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +54,6 @@ public class RegistrationActivity extends AppCompatActivity implements
 
         // Setup and configure bottom sheet for user registration
         setupRegistrationBottomSheet(this);
-
-        // Setup and configure bottom sheet handle gradient background animation
-        setupRegBSGradientAnimEffect(this);
 
         // Instantiate a ViewPager and a PagerAdapter for the Welcome Information Display
         mPager = (ViewPager) findViewById(R.id.regist_welcomeinfo_container);
@@ -72,21 +73,12 @@ public class RegistrationActivity extends AppCompatActivity implements
         LinearLayout vBottomsheet = (LinearLayout) findViewById(R.id.regist_bottomsheet_root);
 
         // init the bottom sheet behavior
-        final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(vBottomsheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(vBottomsheet);
 
-        // set the peek height
-        final int _bottomSheetPeekHeight = (findViewById(R.id.regist_bottomsheet_handle)).getLayoutParams().height;
-        bottomSheetBehavior.setPeekHeight(_bottomSheetPeekHeight);
+        //
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-        bottomSheetBehavior.setHideable(false);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            }
-        }, 800);
 
 
 
@@ -96,9 +88,9 @@ public class RegistrationActivity extends AppCompatActivity implements
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
 
-                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }
+//                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+//                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+//                }
 
             }
 
@@ -108,43 +100,15 @@ public class RegistrationActivity extends AppCompatActivity implements
             }
         });
 
-        // set onClick event listener for Bottom Sheet Handle
-        vBottomsheet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED){
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
-            }
-        });
+
 
     }
 
 
 
-    public void setupRegBSGradientAnimEffect(AppCompatActivity context){
-        AnimationDrawable animationDrawable = (AnimationDrawable) ((LinearLayout)findViewById(R.id.regist_bottomsheet_handle)).getBackground();
-        animationDrawable.setEnterFadeDuration(1500);
-        animationDrawable.setExitFadeDuration(1500);
-        animationDrawable.start();
+    public void activateBottomSheet(){
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
-
-
-
-    private int getNavigationBarHeight(Context context, int orientation){
-        Resources resources = context.getResources();
-        int id = resources.getIdentifier(
-                orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_height_landscape",
-                "dimen", "android");
-        if (id > 0) {
-            return resources.getDimensionPixelSize(id);
-        }
-        return 0;
-    }
-
-
 
 
     @Override

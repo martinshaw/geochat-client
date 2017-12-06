@@ -1,6 +1,7 @@
 package co.martinshaw.apps.android.geochat;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -36,14 +37,22 @@ public class RegistWelcomeinfoFragment1 extends android.support.v4.app.Fragment 
 
         View v = inflater.inflate(R.layout.fragment_regist_welcomeinfo_1, container, false);
 
+        // Create reference to Button which triggers the activation of the Bottomsheet for user registration
         Button vBottomsheetTriggerButton = (Button) v.findViewById(R.id.regist_bottomsheet_triggerbutton);
 
+        // Setup onClick event. Calls function in main activity which graphically expands Bottomsheet component
         vBottomsheetTriggerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
                 ((RegistrationActivity) getActivity()).activateBottomSheet();
             }
         });
+
+        // Configures and runs background gradient animation applied to button
+        AnimationDrawable animationDrawable = (AnimationDrawable) vBottomsheetTriggerButton.getBackground();
+        animationDrawable.setEnterFadeDuration(2000);
+        animationDrawable.setExitFadeDuration(2000);
+        animationDrawable.start();
 
         // Inflate the layout for this fragment
         return v;

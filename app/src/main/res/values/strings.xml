@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">GeoChat</string>
+    <string name="geochat_logo">GeoChat Logo</string>
+
     <string name="gc_main_toolbar_maptoggle">Map Toggle</string>
     <string name="gc_main_toolbar_alerttoggle">Notification &amp; Alert Sound Toggle</string>
-    <string name="geochat_logo">GeoChat Logo</string>
+
     <string name="regist_placeholder_email">E-mail address</string>
     <string name="regist_placeholder_password">Password</string>
     <string name="regist_bottomsheet_header">New User? Create an account …</string>
@@ -10,7 +12,7 @@
     <string name="regist_placeholder_lastname">Last Name</string>
     <string name="regist_create_account_button">Create account …</string>
     <string name="regist_welcome">Welcome to GeoChat!</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="regist_caption_or">or, for existing users …</string>
+    <string name="regist_signin_button">Sign in here …</string>
+    <string name="regist_welcomeinfo_slidehint">Slide to left to explore GeoChat\'s features &#x2192;</string>
 </resources>

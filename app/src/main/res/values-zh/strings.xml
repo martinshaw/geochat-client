@@ -11,4 +11,7 @@
     <string name="regist_bottomsheet_header">新用户？开始一个帐户 …</string>
     <string name="regist_create_account_button">开始一个帐户 …</string>
     <string name="regist_welcome">欢迎 GeoChat！</string>
+    <string name="regist_caption_or">或者，对于现有的用户 …</string>
+    <string name="regist_signin_button">在这里登录 …</string>
+    <string name="regist_welcomeinfo_slidehint">探索GeoChat的功能，向左滑动 &#x2192;</string>
 </resources>

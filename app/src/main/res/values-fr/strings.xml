@@ -11,4 +11,7 @@
     <string name="regist_bottomsheet_header">Nouveau sur GeoChat? Créer un compte …</string>
     <string name="regist_create_account_button">Continuer …</string>
     <string name="regist_welcome">Bienvenue sur GeoChat!</string>
+    <string name="regist_caption_or">ou, pour les utilisateurs existants …</string>
+    <string name="regist_signin_button">Se connecter ici …</string>
+    <string name="regist_welcomeinfo_slidehint">Découvrez les fonctionnalités de GeoChat,\nfaites glisser vers la gauche &#x2192;</string>
 </resources>

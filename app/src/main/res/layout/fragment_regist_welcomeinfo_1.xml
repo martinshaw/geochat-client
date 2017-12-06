@@ -1,44 +1,72 @@
 <LinearLayout
     android:id="@+id/regist_welcomeinfo_1"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
 
-    android:layout_gravity="center"
-    android:gravity="center"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ImageView
-        android:id="@+id/regist_logo"
-        android:layout_marginBottom="19dp"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        app:srcCompat="@drawable/geochat_logo"
-        android:contentDescription="@string/geochat_logo"/>
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
 
-    <TextView
-        android:id="@+id/regist_title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
         android:layout_gravity="center"
-        android:layout_marginBottom="100dp"
-        android:fontFamily="@font/hind_light"
-        android:gravity="center"
-        android:text="@string/regist_welcome"
-        android:textAlignment="center"
-        android:textColor="@color/md_grey_800"
-        android:textSize="20pt"
-        android:lines="2"
-        android:lineSpacingExtra="-12dp"
-        android:elevation="2dp"
-        />
+        android:gravity="center">
 
+        <ImageView
+            android:id="@+id/regist_welcomeinfo_1_logo"
+            android:layout_marginBottom="19dp"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            app:srcCompat="@drawable/geochat_logo"
+            android:contentDescription="@string/geochat_logo"/>
+
+        <TextView
+            android:id="@+id/regist_welcomeinfo_1_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/hind_light"
+            android:gravity="center"
+            android:text="@string/regist_welcome"
+            android:textAlignment="center"
+            android:textColor="@color/md_grey_800"
+            android:textSize="20pt"
+            android:lines="2"
+            android:lineSpacingExtra="-12dp"
+            android:elevation="2dp"
+            />
+
+
+    </LinearLayout>
+
+
+    <TextView android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:paddingBottom="10dp"
+        android:gravity="center"
+        android:fontFamily="@font/hind"
+        android:textSize="7pt"
+        android:textColor="@color/md_grey_400"
+        android:text="@string/regist_welcomeinfo_slidehint"/>
 
     <Button
         android:id="@+id/regist_bottomsheet_triggerbutton"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="@string/regist_bottomsheet_header" />
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/main_drawer_background_gradient"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:text="@string/regist_bottomsheet_header"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/hind_light"
+        android:textAllCaps="false"
+        android:textSize="9pt"
+        />
 
 </LinearLayout>

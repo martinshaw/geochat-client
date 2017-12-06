@@ -1,12 +1,8 @@
 package co.martinshaw.apps.android.geochat;
 
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
-import android.os.Handler;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,11 +10,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class RegistrationActivity extends AppCompatActivity implements
         RegistWelcomeinfoFragment1.OnFragmentInteractionListener,
@@ -79,28 +73,29 @@ public class RegistrationActivity extends AppCompatActivity implements
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
+        // Setup "create account" button
+        findViewById(R.id.regist_bottomsheet_form_createaccount_button).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
+                        createUseraccountAndProceed();
 
+                    }
+                }
+        );
 
+        // Setup "sign in" button
+        findViewById(R.id.regist_bottomsheet_form_signin_button).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-        // set callback for changes
-        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                        
 
-//                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-//                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//                }
-
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
-
+                    }
+                }
+        );
 
     }
 
@@ -111,24 +106,30 @@ public class RegistrationActivity extends AppCompatActivity implements
     }
 
 
-    @Override
-    public void onBackPressed() {
-        if (mPager.getCurrentItem() == 0) {
-            // If the user is currently looking at the first step, allow the system to handle the
-            // Back button. This calls finish() on this activity and pops the back stack.
-            super.onBackPressed();
-        } else {
-            // Otherwise, select the previous step.
-            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-        }
-    }
+    public void createUseraccountAndProceed(){
 
-
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
+        // Attempt REST Function
+        Toast.makeText(getApplicationContext(), "Creating user...", Toast.LENGTH_LONG).show();
 
     }
+
+//
+//    @Override
+//    public void onBackPressed() {
+//        if (mPager.getCurrentItem() == 0) {
+//            // If the user is currently looking at the first step, allow the system to handle the
+//            // Back button. This calls finish() on this activity and pops the back stack.
+//            super.onBackPressed();
+//        } else {
+//            // Otherwise, select the previous step.
+//            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+//        }
+//    }
+//
+
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {  }
 
 
     /**

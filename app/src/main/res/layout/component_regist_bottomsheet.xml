@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/regist_bottomsheet_root"
     android:layout_width="match_parent"
-    android:layout_height="460dp"
+    android:layout_height="520dp"
     android:background="@android:color/darker_gray"
     android:layout_gravity="center"
     android:gravity="center"
@@ -14,7 +14,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="460dp"
+        android:layout_height="520dp"
         android:background="@color/md_white_1000"
         android:orientation="vertical"
         android:layout_gravity="center"

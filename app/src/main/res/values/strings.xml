@@ -2,7 +2,7 @@
     <string name="app_name">GeoChat</string>
     <string name="geochat_logo">GeoChat Logo</string>
 
-    <string name="gc_main_toolbar_maptoggle">Map Toggle</string>
+    <string name="gc_main_toolbar_anontoggle">Toggle for User Anonymity</string>
     <string name="gc_main_toolbar_alerttoggle">Notification &amp; Alert Sound Toggle</string>
 
     <string name="regist_placeholder_email">E-mail address</string>

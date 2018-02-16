@@ -21,6 +21,10 @@
                 android:id="@+id/main_drawer_nav_sub_4"
                 android:icon="@drawable/ic_group_add_black_24dp"
                 android:title="My sub item 2" />
+            <item
+                android:id="@+id/main_drawer_nav_item_signout"
+                android:icon="@drawable/ic_group_add_black_24dp"
+                android:title="Sign out from GeoChat..." />
         </menu>
     </item>
 

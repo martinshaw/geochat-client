@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">GeoChat</string>
-    <string name="gc_main_toolbar_maptoggle">切换到地图</string>
+    <string name="gc_main_toolbar_anontoggle">切换张贴没有身份</string>
     <string name="gc_main_toolbar_alerttoggle">切换到没有警报声</string>
     <string name="geochat_logo">GeoChat的公司形象</string>
     <string name="regist_placeholder_email">电子邮件地址</string>

@@ -1,6 +1,8 @@
 package co.martinshaw.apps.android.geochat;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
@@ -39,12 +41,14 @@ public class RegistrationActivity extends AppCompatActivity implements
 
 
     BottomSheetBehavior bottomSheetBehavior;
+    SharedPreferences prefs;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        prefs = this.getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
 
         // Setup and configure bottom sheet for user registration
         setupRegistrationBottomSheet(this);
@@ -97,6 +101,7 @@ public class RegistrationActivity extends AppCompatActivity implements
                 }
         );
 
+
     }
 
 
@@ -108,8 +113,16 @@ public class RegistrationActivity extends AppCompatActivity implements
 
     public void createUseraccountAndProceed(){
 
-        // Attempt REST Function
+        // Dummy: Remember user is signed in
+        prefs.edit().putBoolean("isSignedIn", true).apply();
+
+        // Dummy: Attempt REST Function
         Toast.makeText(getApplicationContext(), "Creating user...", Toast.LENGTH_LONG).show();
+
+        // Dummy: Move screen to MainActivity
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
 
     }
 
@@ -150,6 +163,7 @@ public class RegistrationActivity extends AppCompatActivity implements
 
         @Override
         public Fragment getItem(int position) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             switch (position){
                 case 0:
                     return new RegistWelcomeinfoFragment1();
@@ -164,6 +178,7 @@ public class RegistrationActivity extends AppCompatActivity implements
 
 
             }
+
         }
 
         @Override

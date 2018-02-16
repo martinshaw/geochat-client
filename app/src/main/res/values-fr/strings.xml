@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">GeoChat</string>
-    <string name="gc_main_toolbar_maptoggle">Passer à la carte</string>
+    <string name="gc_main_toolbar_anontoggle">Passer à l\'affichage sans identité</string>
     <string name="gc_main_toolbar_alerttoggle">Silence et restaurer le son d\'alerte</string>
     <string name="geochat_logo">Logo de GeoChat</string>
     <string name="regist_placeholder_email">Adresse e-mail</string>

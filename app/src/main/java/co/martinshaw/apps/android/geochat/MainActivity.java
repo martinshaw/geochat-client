@@ -1,5 +1,8 @@
 package co.martinshaw.apps.android.geochat;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -24,12 +27,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     DrawerLayout vDrawerLayout;
+    SharedPreferences prefs;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        prefs = this.getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
 
 
         // Setup Action Bar (Toolbar)
@@ -88,29 +93,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if(prefs.getBoolean("isAnonymous", false) == true){
+            menu.getItem(R.id.action_anontoggle).setIcon(R.drawable.ic_person_outline_black_24dp);
+        } else {
+            menu.getItem(R.id.action_anontoggle).setIcon(R.drawable.ic_person_black_24dp);
+        }
+
+        if(prefs.getBoolean("areAlertsEnabled", false) == true){
+            menu.getItem(R.id.action_alerttoggle).setIcon(R.drawable.ic_notifications_active_black_24dp);
+        } else {
+            menu.getItem(R.id.action_alerttoggle).setIcon(R.drawable.ic_notifications_off_black_24dp);
+        }
+
+        return true;
+    }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Drawable icon;
         switch (item.getItemId()) {
 
             // action with ID action_maptoggle was selected
-            case R.id.action_maptoggle:
-                Toast.makeText(this, "Map toggle selected", Toast.LENGTH_SHORT).show();
-                break;
+            case R.id.action_anontoggle:
+
+                // Alternate button icon depending on current state
+                icon = item.getIcon();
+                if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_person_black_24dp, null).getConstantState())){
+                    item.setIcon(R.drawable.ic_person_outline_black_24dp);
+                    Toast.makeText(this, "User Anonymity turned off!", Toast.LENGTH_SHORT).show();
+                    prefs.edit().putBoolean("isAnonymous", false).apply();
+
+                } else if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_person_outline_black_24dp,null).getConstantState())){
+                    item.setIcon(R.drawable.ic_person_black_24dp);
+                    Toast.makeText(this, "User Anonymity turned on!", Toast.LENGTH_SHORT).show();
+                    prefs.edit().putBoolean("isAnonymous", true).apply();
+                }
 
             // action with ID action_alerttoggle was selected
             case R.id.action_alerttoggle:
 
                 // Alternate button icon depending on current state
-                Drawable icon = item.getIcon();
+                icon = item.getIcon();
                 if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_notifications_active_black_24dp, null).getConstantState())){
                     item.setIcon(R.drawable.ic_notifications_off_black_24dp);
                     Toast.makeText(this, "Notifications & alerts turned off!", Toast.LENGTH_SHORT).show();
+                    prefs.edit().putBoolean("areAlertsEnabled", false).apply();
 
                 } else if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_notifications_off_black_24dp,null).getConstantState())){
                     item.setIcon(R.drawable.ic_notifications_active_black_24dp);
                     Toast.makeText(this, "Notifications & alerts turned on!", Toast.LENGTH_SHORT).show();
+                    prefs.edit().putBoolean("areAlertsEnabled", true).apply();
 
                 }
 
@@ -135,6 +170,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 break;
             }
+            case R.id.main_drawer_nav_item_signout: {
+                Toast.makeText(this, "Signing out ...", Toast.LENGTH_SHORT).show();
+                prefs.edit().putBoolean("isSignedIn", false).apply();
+
+                Intent intent = new Intent(this, SplashscreenActivity.class);
+                startActivity(intent);
+                finish();
+
+                break;
+            }
+
         }
 
         //close navigation drawer

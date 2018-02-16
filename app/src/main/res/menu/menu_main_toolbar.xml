@@ -1,16 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Change map view toggle -->
+    <!-- Change anonymity view toggle -->
     <item
-        android:id="@+id/action_maptoggle"
-        android:icon="@drawable/ic_explore_black_24dp"
-        android:title="@string/gc_main_toolbar_maptoggle"
+        android:id="@+id/action_anontoggle"
+        android:title="@string/gc_main_toolbar_anontoggle"
         app:showAsAction="ifRoom"/>
 
     <!-- Notification & audio alert toggle -->
     <item android:id="@+id/action_alerttoggle"
-        android:icon="@drawable/ic_notifications_active_black_24dp"
         android:title="@string/gc_main_toolbar_alerttoggle"
         app:showAsAction="ifRoom"/>
 

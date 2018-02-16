@@ -3,11 +3,11 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/main_drawer_nav_item_1"
-            android:icon="@drawable/ic_group_add_black_24dp"
+            android:icon="@drawable/ic_place_black_24dp"
             android:title="My item 1" />
         <item
             android:id="@+id/main_drawer_nav_item_2"
-            android:icon="@drawable/ic_group_add_black_24dp"
+            android:icon="@drawable/ic_place_black_24dp"
             android:title="My item 2" />
     </group>
 
@@ -15,15 +15,15 @@
         <menu>
             <item
                 android:id="@+id/main_drawer_nav_sub_3"
-                android:icon="@drawable/ic_group_add_black_24dp"
+                android:icon="@drawable/ic_place_black_24dp"
                 android:title="My sub item 1" />
             <item
                 android:id="@+id/main_drawer_nav_sub_4"
-                android:icon="@drawable/ic_group_add_black_24dp"
+                android:icon="@drawable/ic_place_black_24dp"
                 android:title="My sub item 2" />
             <item
                 android:id="@+id/main_drawer_nav_item_signout"
-                android:icon="@drawable/ic_group_add_black_24dp"
+                android:icon="@drawable/ic_place_black_24dp"
                 android:title="Sign out from GeoChat..." />
         </menu>
     </item>

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Set Dynamic Contents of Action Bar Title & Subtitle
 //        assert getSupportActionBar() != null;
         if (getSupportActionBar() != null){
-            getSupportActionBar().setTitle("123 Fake Street, Manchester, UK");
+            getSupportActionBar().setTitle("John Dalton (MMU), Oxford Road, Manchester");
             vToolbar.setTitleTextColor(getResources().getColor(R.color.md_black_1000, null));
 //            vToolbar.setLogo(getResources().getDrawable(R.drawable.geochat_logo,null));
             vToolbar.setSubtitle("Within 100 metres");
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         vFloatingActionBtn.setOnClickListener(
                 new View.OnClickListener(){
                     public void onClick(View v){
-                        Toast.makeText(getApplicationContext(), "asdasdads", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "* Will open Message Compose view... *", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -95,17 +95,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if(prefs.getBoolean("isAnonymous", false) == true){
-            menu.getItem(R.id.action_anontoggle).setIcon(R.drawable.ic_person_outline_black_24dp);
-        } else {
-            menu.getItem(R.id.action_anontoggle).setIcon(R.drawable.ic_person_black_24dp);
-        }
 
         if(prefs.getBoolean("areAlertsEnabled", false) == true){
-            menu.getItem(R.id.action_alerttoggle).setIcon(R.drawable.ic_notifications_active_black_24dp);
+            menu.getItem(0).setIcon(R.drawable.ic_notifications_active_black_24dp);
         } else {
-            menu.getItem(R.id.action_alerttoggle).setIcon(R.drawable.ic_notifications_off_black_24dp);
+            menu.getItem(0).setIcon(R.drawable.ic_notifications_off_black_24dp);
         }
+
+//        if(prefs.getBoolean("isAnonymous", false) == true){
+//            menu.getItem(1).setIcon(R.drawable.ic_person_outline_black_24dp);
+//        } else {
+//            menu.getItem(1).setIcon(R.drawable.ic_person_black_24dp);
+//        }
 
         return true;
     }
@@ -117,20 +118,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
 
             // action with ID action_maptoggle was selected
-            case R.id.action_anontoggle:
-
-                // Alternate button icon depending on current state
-                icon = item.getIcon();
-                if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_person_black_24dp, null).getConstantState())){
-                    item.setIcon(R.drawable.ic_person_outline_black_24dp);
-                    Toast.makeText(this, "User Anonymity turned off!", Toast.LENGTH_SHORT).show();
-                    prefs.edit().putBoolean("isAnonymous", false).apply();
-
-                } else if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_person_outline_black_24dp,null).getConstantState())){
-                    item.setIcon(R.drawable.ic_person_black_24dp);
-                    Toast.makeText(this, "User Anonymity turned on!", Toast.LENGTH_SHORT).show();
-                    prefs.edit().putBoolean("isAnonymous", true).apply();
-                }
+//            case R.id.action_anontoggle:
+//
+//                // Alternate button icon depending on current state
+//                icon = item.getIcon();
+//                if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_person_black_24dp, null).getConstantState())){
+//                    item.setIcon(R.drawable.ic_person_outline_black_24dp);
+//                    Toast.makeText(this, "User Anonymity turned off!", Toast.LENGTH_SHORT).show();
+//                    prefs.edit().putBoolean("isAnonymous", false).apply();
+//
+//                } else if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_person_outline_black_24dp,null).getConstantState())){
+//                    item.setIcon(R.drawable.ic_person_black_24dp);
+//                    Toast.makeText(this, "User Anonymity turned on!", Toast.LENGTH_SHORT).show();
+//                    prefs.edit().putBoolean("isAnonymous", true).apply();
+//                }
 
             // action with ID action_alerttoggle was selected
             case R.id.action_alerttoggle:

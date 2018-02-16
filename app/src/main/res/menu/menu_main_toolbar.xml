@@ -1,15 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Change anonymity view toggle -->
-    <item
-        android:id="@+id/action_anontoggle"
-        android:title="@string/gc_main_toolbar_anontoggle"
-        app:showAsAction="ifRoom"/>
-
-    <!-- Notification & audio alert toggle -->
     <item android:id="@+id/action_alerttoggle"
         android:title="@string/gc_main_toolbar_alerttoggle"
         app:showAsAction="ifRoom"/>
+
+    <!--<item-->
+    <!--android:id="@+id/action_anontoggle"-->
+    <!--android:title="@string/gc_main_toolbar_anontoggle"-->
+    <!--app:showAsAction="ifRoom"/>-->
+
 
 </menu>

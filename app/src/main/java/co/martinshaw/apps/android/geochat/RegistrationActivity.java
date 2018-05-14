@@ -69,34 +69,9 @@ public class RegistrationActivity extends AppCompatActivity implements
         prefs = this.getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
 
         // Setup API Service
-        retrofit = new Retrofit.Builder()
-//                .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001").toString())
-                .baseUrl("http://325f3ff2.ngrok.io")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        service = retrofit.create(GeochatAPIService.class);
-
-        // Test API Service
-//        Call<GeochatAPIResponse<User>> usersRequest = service.getAllUsers(prefs.getString("sessionKey", ""));
-        Call<GeochatAPIResponse<User>> usersRequest = service.getAllUsers("test-session-key");
-        usersRequest.enqueue(new Callback<GeochatAPIResponse<User>>() {
-            @Override
-            public void onResponse(Call<GeochatAPIResponse<User>> call, Response<GeochatAPIResponse<User>> response) {
-                List<User> users = response.body().getData();
-                Log.i("Response", response.body().getData().get(0).first_name.toString());
-            }
-
-            @Override
-            public void onFailure(Call<GeochatAPIResponse<User>> call, Throwable t) {
-                Log.i("Failure", t.toString());
-            }
-        });
-//        try{
-//            usersRequest.execute();
-//        } catch (IOException e){
-//            e.printStackTrace();
-//        }
-//
+        /*
+        *  MOVE API SETUP CODE FROM API URL DIALOG EVENT TO HERE IN PRODUCTION
+        * */
 
         // Setup and configure bottom sheet for user registration
         setupRegistrationBottomSheet(this);
@@ -127,10 +102,11 @@ public class RegistrationActivity extends AppCompatActivity implements
                             Toast.makeText(getApplicationContext(), "API URL changed to: " + url, Toast.LENGTH_LONG).show();
                             prefs.edit().putString("apiUrl", url).apply();
 
-//                            retrofit = new Retrofit.Builder()
-//                                    .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001").toString())
-//                                    .build();
-//                            service = retrofit.create(GeochatAPIService.class);
+                            retrofit = new Retrofit.Builder()
+                                .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001").toString())
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+                            service = retrofit.create(GeochatAPIService.class);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -176,11 +152,7 @@ public class RegistrationActivity extends AppCompatActivity implements
         findViewById(R.id.regist_bottomsheet_form_signin_button).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-
-                        
-
-                    }
+                    public void onClick(View v) { signinUserAccountAndProceed(); }
                 }
         );
 
@@ -207,6 +179,30 @@ public class RegistrationActivity extends AppCompatActivity implements
         startActivity(intent);
         finish();
 
+    }
+
+
+    public void signinUserAccountAndProceed(){
+        // Check Internet Connection
+
+        // Check form inputs validated
+
+        // Attempt to communicate with API Service. Using Sign In function to receive Session Key
+            // onFailure will be triggered if no .data object is received (in case of !200 response), just in case, check for !200 .status code in onResponse function too
+        Call<GeochatAPIResponse<UserSession>> signInRequest = service.signInUserAccount();
+        signInRequest.enqueue(new Callback<GeochatAPIResponse<UserSession>>() {
+            @Override
+            public void onResponse(Call<GeochatAPIResponse<UserSession>> call, Response<GeochatAPIResponse<UserSession>> response) {
+                List<UserSession> users = response.body().getData();
+                Log.i("Response", response.body().getData().get(0).session.session_id.toString());
+            }
+
+            @Override
+            public void onFailure(Call<GeochatAPIResponse<UserSession>> call, Throwable t) {
+                Log.i("Failure", t.toString());
+                Toast.makeText(RegistrationActivity.this, "An error has occured while attempting to sign in!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

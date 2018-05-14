@@ -19,5 +19,5 @@ public interface GeochatAPIService {
 //    Call<GeochatAPIResponse> getStatus(@Header("Geochat-Session-Key") String session_key);
 
     @GET("api/v0.1/users")
-    Call<GeochatAPIResponse> getAllUsers(@Header("Geochat-Session-Key") String session_key);
+    Call<GeochatAPIResponse<User>> getAllUsers(@Header("Geochat-Session-Key") String session_key);
 }

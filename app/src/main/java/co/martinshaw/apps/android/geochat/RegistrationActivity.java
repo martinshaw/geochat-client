@@ -14,14 +14,21 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.List;
+
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegistrationActivity extends AppCompatActivity implements
         RegistWelcomeinfoFragment1.OnFragmentInteractionListener,
@@ -63,14 +70,33 @@ public class RegistrationActivity extends AppCompatActivity implements
 
         // Setup API Service
         retrofit = new Retrofit.Builder()
-                .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001").toString())
+//                .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001").toString())
+                .baseUrl("http://325f3ff2.ngrok.io")
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(GeochatAPIService.class);
 
         // Test API Service
-        Call<GeochatAPIResponse> users = service.getAllUsers(prefs.getString("sessionKey", ""));
-        Toast.makeText(this, users.toString(), Toast.LENGTH_SHORT).show();
+//        Call<GeochatAPIResponse<User>> usersRequest = service.getAllUsers(prefs.getString("sessionKey", ""));
+        Call<GeochatAPIResponse<User>> usersRequest = service.getAllUsers("test-session-key");
+        usersRequest.enqueue(new Callback<GeochatAPIResponse<User>>() {
+            @Override
+            public void onResponse(Call<GeochatAPIResponse<User>> call, Response<GeochatAPIResponse<User>> response) {
+                List<User> users = response.body().getData();
+                Log.i("Response", response.body().getData().get(0).first_name.toString());
+            }
 
+            @Override
+            public void onFailure(Call<GeochatAPIResponse<User>> call, Throwable t) {
+                Log.i("Failure", t.toString());
+            }
+        });
+//        try{
+//            usersRequest.execute();
+//        } catch (IOException e){
+//            e.printStackTrace();
+//        }
+//
 
         // Setup and configure bottom sheet for user registration
         setupRegistrationBottomSheet(this);
@@ -101,10 +127,10 @@ public class RegistrationActivity extends AppCompatActivity implements
                             Toast.makeText(getApplicationContext(), "API URL changed to: " + url, Toast.LENGTH_LONG).show();
                             prefs.edit().putString("apiUrl", url).apply();
 
-                            retrofit = new Retrofit.Builder()
-                                    .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001").toString())
-                                    .build();
-                            service = retrofit.create(GeochatAPIService.class);
+//                            retrofit = new Retrofit.Builder()
+//                                    .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001").toString())
+//                                    .build();
+//                            service = retrofit.create(GeochatAPIService.class);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

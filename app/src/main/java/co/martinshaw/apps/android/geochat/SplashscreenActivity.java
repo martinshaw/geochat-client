@@ -23,6 +23,7 @@ public class SplashscreenActivity extends AppCompatActivity {
         if (! prefs.contains("isSignedIn")){ prefs.edit().putBoolean("isSignedIn", false).apply(); }
         if (! prefs.contains("areAlertsEnabled")){ prefs.edit().putBoolean("areAlertsEnabled", false).apply(); }
         if (! prefs.contains("isAnonymous")){ prefs.edit().putBoolean("isAnonymous", false).apply(); }
+        if (! prefs.contains("apiUrl")){ prefs.edit().putString("apiUrl", "http://192.168.159.139:8001").apply(); }
 
         // Check if app remembers a signed in user from settings
         if(prefs.getBoolean("isSignedIn", false)){

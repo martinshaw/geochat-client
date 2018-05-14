@@ -1,6 +1,7 @@
 package co.martinshaw.apps.android.geochat;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -11,10 +12,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import retrofit2.Call;
+import retrofit2.Retrofit;
 
 public class RegistrationActivity extends AppCompatActivity implements
         RegistWelcomeinfoFragment1.OnFragmentInteractionListener,
@@ -42,6 +49,10 @@ public class RegistrationActivity extends AppCompatActivity implements
 
     BottomSheetBehavior bottomSheetBehavior;
     SharedPreferences prefs;
+    Retrofit retrofit;
+    GeochatAPIService service;
+
+    Button mAPIURLSettingDialog;
 
 
     @Override
@@ -49,6 +60,17 @@ public class RegistrationActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         prefs = this.getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
+
+        // Setup API Service
+        retrofit = new Retrofit.Builder()
+                .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001").toString())
+                .build();
+        service = retrofit.create(GeochatAPIService.class);
+
+        // Test API Service
+        Call<GeochatAPIResponse> users = service.getAllUsers(prefs.getString("sessionKey", ""));
+        Toast.makeText(this, users.toString(), Toast.LENGTH_SHORT).show();
+
 
         // Setup and configure bottom sheet for user registration
         setupRegistrationBottomSheet(this);
@@ -58,6 +80,41 @@ public class RegistrationActivity extends AppCompatActivity implements
         mPagerAdapter = new WelcomeinfoPagerAdaptor(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
 
+        // Setup API URL setting dialog
+        mAPIURLSettingDialog = (Button) findViewById(R.id.regist_bottomsheet_setting_button);
+        mAPIURLSettingDialog.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+//                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
+
+                final EditText txtUrl = new EditText(getApplicationContext());
+                txtUrl.setHint("http://192.168.159.139:8001");
+
+                new android.support.v7.app.AlertDialog.Builder(RegistrationActivity.this)
+                    .setTitle("API URL Setting")
+                    .setMessage("Type the URL which you would like the app to use to locate the API server")
+                    .setView(txtUrl)
+                    .setPositiveButton("Change Setting", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            String url = txtUrl.getText().toString();
+
+                            Toast.makeText(getApplicationContext(), "API URL changed to: " + url, Toast.LENGTH_LONG).show();
+                            prefs.edit().putString("apiUrl", url).apply();
+
+                            retrofit = new Retrofit.Builder()
+                                    .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001").toString())
+                                    .build();
+                            service = retrofit.create(GeochatAPIService.class);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    })
+                    .show();
+
+            }
+        });
 
 
 
@@ -83,7 +140,7 @@ public class RegistrationActivity extends AppCompatActivity implements
                     @Override
                     public void onClick(View v) {
 
-                        createUseraccountAndProceed();
+                        createUserAccountAndProceed();
 
                     }
                 }
@@ -111,7 +168,7 @@ public class RegistrationActivity extends AppCompatActivity implements
     }
 
 
-    public void createUseraccountAndProceed(){
+    public void createUserAccountAndProceed(){
 
         // Dummy: Remember user is signed in
         prefs.edit().putBoolean("isSignedIn", true).apply();

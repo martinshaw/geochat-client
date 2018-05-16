@@ -8,7 +8,7 @@ public class Session {
 
     public Integer id;
     public Integer user_id;
-    public String session_id;
+    public String session_key;
     public String next;
     public Integer timeout;
 

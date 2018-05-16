@@ -22,9 +22,9 @@ public class GeochatAPIResponse<T> {
 
     @SerializedName("data")
     @Expose
-    List<T> data;
+    T data;
 
-    public GeochatAPIResponse (Integer status, String error_msg, List<T> data) {
+    public GeochatAPIResponse (Integer status, String error_msg, T data) {
         if(status == 200) {this.isError = false;}
 
         this.status = status;
@@ -34,5 +34,5 @@ public class GeochatAPIResponse<T> {
 
     public Integer getStatus() {return this.status;}
     public String getErrorMsg() {return this.error_msg;}
-    public List<T> getData() {return this.data;}
+    public T getData() {return this.data;}
 }

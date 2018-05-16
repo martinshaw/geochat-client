@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
@@ -22,9 +23,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rengwuxian.materialedittext.MaterialEditText;
+
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -103,11 +109,22 @@ public class RegistrationActivity extends AppCompatActivity implements
                             Toast.makeText(getApplicationContext(), "API URL changed to: " + url, Toast.LENGTH_LONG).show();
                             prefs.edit().putString("apiUrl", url).apply();
 
+
+                            /* REMOVE ME ON PRODUCTION   /    ECHOS RESPONSE TO LOGCAT*/
+                            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+                            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+                            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+                            /* ====================== */
+
+                            /* MOVE ME, SEE ABOVE */
                             retrofit = new Retrofit.Builder()
+                                .client(client)
                                 .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001").toString())
                                 .addConverterFactory(GsonConverterFactory.create())
                                 .build();
                             service = retrofit.create(GeochatAPIService.class);
+                            /* ============================= */
+
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -185,30 +202,54 @@ public class RegistrationActivity extends AppCompatActivity implements
 
     public void signinUserAccountAndProceed(){
         // Check Internet Connection
-
-        // Check form inputs validated
-        TextView mEmailAddressTextBox = (TextView) findViewById(R.id.regist_bottomsheet_form_email);
-        TextView mPasswordTextBox = (TextView) findViewById(R.id.regist_bottomsheet_form_password);
-        String inputed_email_address = (String) mEmailAddressTextBox.getText().toString();
-        String inputed_password = (String) mPasswordTextBox.getText().toString();
+        if (!isNetworkConnected()) {
 
 
-        // Attempt to communicate with API Service. Using Sign In function to receive Session Key
+            Toast.makeText(this, "You must be connected to the internet to access Geochat", Toast.LENGTH_SHORT).show();
+
+
+        } else {
+
+
+            // Check form inputs validated
+            MaterialEditText mEmailAddressTextBox = (MaterialEditText) findViewById(R.id.regist_bottomsheet_form_email);
+            MaterialEditText mPasswordTextBox = (MaterialEditText) findViewById(R.id.regist_bottomsheet_form_password);
+            String inputed_email_address = (String) mEmailAddressTextBox.getText().toString();
+            String inputed_password = (String) mPasswordTextBox.getText().toString();
+            Log.i("cred", inputed_email_address);
+            Log.i("cred", inputed_password);
+
+
+            // Attempt to communicate with API Service. Using Sign In function to receive Session Key
             // onFailure will be triggered if no .data object is received (in case of !200 response), just in case, check for !200 .status code in onResponse function too
-        Call<GeochatAPIResponse<UserSession>> signInRequest = service.signInUserAccount(inputed_email_address, inputed_password);
-        signInRequest.enqueue(new Callback<GeochatAPIResponse<UserSession>>() {
-            @Override
-            public void onResponse(Call<GeochatAPIResponse<UserSession>> call, Response<GeochatAPIResponse<UserSession>> response) {
-                List<UserSession> users = response.body().getData();
-                Log.i("Response", response.body().getData().get(0).session.session_id.toString());
-            }
+            Call<GeochatAPIResponse<UserSession>> signInRequest = service.signInUserAccount(inputed_email_address, inputed_password);
+            signInRequest.enqueue(new Callback<GeochatAPIResponse<UserSession>>() {
+                @Override
+                public void onResponse(Call<GeochatAPIResponse<UserSession>> call, Response<GeochatAPIResponse<UserSession>> response) {
+                    if (response.body().getErrorMsg() != null) {
+                        Toast.makeText(RegistrationActivity.this, response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        UserSession usersession = response.body().getData();
+                        Log.i("GEOCHAT_INFO_API", "Geochat API Session Key received: " + usersession.session.session_key);
+                        Log.i("GEOCHAT_INFO_API", "Geochat API User signed in: " + usersession.user.first_name + " " + usersession.user.last_name + "  id: " + usersession.user.id);
 
-            @Override
-            public void onFailure(Call<GeochatAPIResponse<UserSession>> call, Throwable t) {
-                Log.i("Failure", t.toString());
-                Toast.makeText(RegistrationActivity.this, "An error has occured while attempting to sign in!", Toast.LENGTH_SHORT).show();
-            }
-        });
+                        if (usersession.session.session_key != null) {
+                            prefs.edit().putString("sessionKey", usersession.session.session_key).apply();
+                            Toast.makeText(RegistrationActivity.this, "Welcome " + usersession.user.first_name + "!", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<GeochatAPIResponse<UserSession>> call, Throwable t) {
+                    Log.i("Failure", t.toString());
+                    Toast.makeText(RegistrationActivity.this, "An error has occurred while attempting to sign-in!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            
+        }
     }
 
 
@@ -270,6 +311,13 @@ public class RegistrationActivity extends AppCompatActivity implements
         public int getCount() {
             return NUM_PAGES;
         }
+    }
+
+
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
     }
 
 

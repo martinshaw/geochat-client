@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -186,10 +187,15 @@ public class RegistrationActivity extends AppCompatActivity implements
         // Check Internet Connection
 
         // Check form inputs validated
+        TextView mEmailAddressTextBox = (TextView) findViewById(R.id.regist_bottomsheet_form_email);
+        TextView mPasswordTextBox = (TextView) findViewById(R.id.regist_bottomsheet_form_password);
+        String inputed_email_address = (String) mEmailAddressTextBox.getText().toString();
+        String inputed_password = (String) mPasswordTextBox.getText().toString();
+
 
         // Attempt to communicate with API Service. Using Sign In function to receive Session Key
             // onFailure will be triggered if no .data object is received (in case of !200 response), just in case, check for !200 .status code in onResponse function too
-        Call<GeochatAPIResponse<UserSession>> signInRequest = service.signInUserAccount();
+        Call<GeochatAPIResponse<UserSession>> signInRequest = service.signInUserAccount(inputed_email_address, inputed_password);
         signInRequest.enqueue(new Callback<GeochatAPIResponse<UserSession>>() {
             @Override
             public void onResponse(Call<GeochatAPIResponse<UserSession>> call, Response<GeochatAPIResponse<UserSession>> response) {

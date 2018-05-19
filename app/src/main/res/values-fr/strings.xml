@@ -14,4 +14,6 @@
     <string name="regist_caption_or">ou, pour les utilisateurs existants …</string>
     <string name="regist_signin_button">Se connecter ici …</string>
     <string name="regist_welcomeinfo_slidehint">Découvrez les fonctionnalités de GeoChat,\nfaites glisser vers la gauche &#x2192;</string>
+    <string name="error_network_connection">Vous devez être connecté à Internet pour accéder à GeoChat</string>
+    <string name="error_signin">"Une erreur s'est produite lors de la tentative de connexion! "</string>
 </resources>

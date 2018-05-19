@@ -26,6 +26,19 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
 
+        <it.neokree.materialtabs.MaterialTabHost
+            android:id="@+id/main_materialTabHost"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@+id/main_toolbar"
+            app:primaryColor="#009688"
+            app:accentColor="#ffc400" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/main_materialViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/main_materialTabHost" />
 
 
 

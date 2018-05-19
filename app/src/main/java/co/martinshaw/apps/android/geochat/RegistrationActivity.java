@@ -119,7 +119,7 @@ public class RegistrationActivity extends AppCompatActivity implements
                             /* MOVE ME, SEE ABOVE */
                             retrofit = new Retrofit.Builder()
                                 .client(client)
-                                .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001").toString())
+                                .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001"))
                                 .addConverterFactory(GsonConverterFactory.create())
                                 .build();
                             service = retrofit.create(GeochatAPIService.class);
@@ -205,7 +205,7 @@ public class RegistrationActivity extends AppCompatActivity implements
         if (!isNetworkConnected()) {
 
 
-            Toast.makeText(this, "You must be connected to the internet to access Geochat", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_network_connection, Toast.LENGTH_SHORT).show();
 
 
         } else {
@@ -216,8 +216,6 @@ public class RegistrationActivity extends AppCompatActivity implements
             MaterialEditText mPasswordTextBox = (MaterialEditText) findViewById(R.id.regist_bottomsheet_form_password);
             String inputed_email_address = (String) mEmailAddressTextBox.getText().toString();
             String inputed_password = (String) mPasswordTextBox.getText().toString();
-            Log.i("cred", inputed_email_address);
-            Log.i("cred", inputed_password);
 
 
             // Attempt to communicate with API Service. Using Sign In function to receive Session Key
@@ -244,7 +242,7 @@ public class RegistrationActivity extends AppCompatActivity implements
                 @Override
                 public void onFailure(Call<GeochatAPIResponse<UserSession>> call, Throwable t) {
                     Log.i("Failure", t.toString());
-                    Toast.makeText(RegistrationActivity.this, "An error has occurred while attempting to sign-in!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegistrationActivity.this, R.string.error_signin, Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -277,7 +275,7 @@ public class RegistrationActivity extends AppCompatActivity implements
 
 
     /**
-     * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
+     * A simple pager adapter that represents 4 ScreenSlidePageFragment objects, in
      * sequence.
      */
     private class WelcomeinfoPagerAdaptor extends FragmentStatePagerAdapter {

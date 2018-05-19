@@ -14,5 +14,12 @@
     <string name="regist_welcome">Welcome to GeoChat!</string>
     <string name="regist_caption_or">or, for existing users …</string>
     <string name="regist_signin_button">Sign in here …</string>
+
     <string name="regist_welcomeinfo_slidehint">Slide to left to explore GeoChat\'s features &#x2192;</string>
+    <string name="regist_welcomeinfo_2_title">What is GeoChat?</string>
+    <string name="regist_welcomeinfo_2_paragraph">Send and receive messages from people nearby. From your office to your home, from your street to your neighbourhood…</string>
+
+    <string name="error_network_connection">You must be connected to the internet to access GeoChat</string>
+    <string name="error_signin">An error has occurred while attempting to sign-in!</string>
+    <string name="title_activity_map">Map</string>
 </resources>

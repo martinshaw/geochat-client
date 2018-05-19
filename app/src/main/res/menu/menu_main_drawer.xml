@@ -11,20 +11,21 @@
             android:title="My item 2" />
     </group>
 
-    <item android:title="Sub items">
+    <item android:title="@string/drawer_section_actions">
         <menu>
             <item
-                android:id="@+id/main_drawer_nav_sub_3"
-                android:icon="@drawable/ic_place_black_24dp"
-                android:title="My sub item 1" />
-            <item
-                android:id="@+id/main_drawer_nav_sub_4"
-                android:icon="@drawable/ic_place_black_24dp"
-                android:title="My sub item 2" />
-            <item
                 android:id="@+id/main_drawer_nav_item_signout"
-                android:icon="@drawable/ic_place_black_24dp"
-                android:title="Sign out from GeoChat..." />
+                android:icon="@drawable/ic_person_black_24dp"
+                android:title="@string/drawer_item_signout" />
+        </menu>
+    </item>
+
+    <item android:title="@string/drawer_section_about">
+        <menu>
+            <item
+                android:id="@+id/main_drawer_nav_item_about"
+                android:icon="@drawable/ic_explore_black_24dp"
+                android:title="@string/drawer_item_about" />
         </menu>
     </item>
 

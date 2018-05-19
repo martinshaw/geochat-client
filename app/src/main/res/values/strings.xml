@@ -22,4 +22,8 @@
     <string name="error_network_connection">You must be connected to the internet to access GeoChat</string>
     <string name="error_signin">An error has occurred while attempting to sign-in!</string>
     <string name="title_activity_map">Map</string>
+    <string name="drawer_item_signout">Sign out from GeoChat...</string>
+    <string name="drawer_section_about">About the app</string>
+    <string name="drawer_section_actions">Sub items</string>
+    <string name="drawer_item_about">About GeoChat</string>
 </resources>

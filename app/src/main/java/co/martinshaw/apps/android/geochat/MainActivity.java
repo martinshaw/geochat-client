@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
@@ -16,10 +17,13 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +32,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import mehdi.sakout.aboutpage.AboutPage;
+import mehdi.sakout.aboutpage.Element;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -50,18 +57,78 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         prefs = this.getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
 
 
+
+
+
+
+
+
+
+        // Drawer Panel Setup & onClick Events
+        vDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawerlayout);
+        NavigationView vDrawerNavView = (NavigationView) findViewById(R.id.main_drawer);
+        vDrawerNavView.setNavigationItemSelectedListener(this);
+
+        // Drawer Panel Configure Animation Details
+        AnimationDrawable animationDrawable =
+                (AnimationDrawable) vDrawerNavView.getHeaderView(0).getBackground();
+        animationDrawable.setEnterFadeDuration(2000);
+        animationDrawable.setExitFadeDuration(2000);
+        animationDrawable.start();
+
+        // Drawer Panel Dynamically Change Title
+        TextView vDrawerTitle = (TextView) vDrawerNavView.getHeaderView(0).findViewById(R.id.main_drawer_header_title);
+        vDrawerTitle.setText("Martin Shaw");
+
+
+
+
+
+
+
+
         // Setup Action Bar (Toolbar)
         vToolbar = findViewById(R.id.main_toolbar);
+        ActionBarDrawerToggle mDrawerToggle;
+        final ActionBar actionBar = getSupportActionBar();
+
         setSupportActionBar(vToolbar);
 
         // Set Dynamic Contents of Action Bar Title & Subtitle
-//        assert getSupportActionBar() != null;
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("John Dalton (MMU), Oxford Road, Manchester");
+        if (actionBar != null) {
+
+            actionBar.setTitle(R.string.app_name);
+            actionBar.setDisplayHomeAsUpEnabled(true);
             vToolbar.setTitleTextColor(getResources().getColor(R.color.md_black_1000, null));
 //            vToolbar.setLogo(getResources().getDrawable(R.drawable.geochat_logo,null));
-            vToolbar.setSubtitle("Within 100 metres");
+
+            mDrawerToggle = new ActionBarDrawerToggle(this, vDrawerLayout, vToolbar, R.string.app_name, R.string.app_name)
+            {
+
+                public void onDrawerClosed(View view)
+                {
+                    supportInvalidateOptionsMenu();
+                    //drawerOpened = false;
+                }
+
+                public void onDrawerOpened(View drawerView)
+                {
+                    supportInvalidateOptionsMenu();
+                    //drawerOpened = true;
+                }
+            };
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
+            vDrawerLayout.setDrawerListener(mDrawerToggle);
+            mDrawerToggle.syncState();
+
         }
+
+
+
+
+
+
+
 
 
         // Floating Action Button onClick Event
@@ -81,21 +148,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         );
 
 
-        // Drawer Panel Setup & onClick Events
-        vDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawerlayout);
-        NavigationView vDrawerNavView = (NavigationView) findViewById(R.id.main_drawer);
-        vDrawerNavView.setNavigationItemSelectedListener(this);
-
-        // Drawer Panel Configure Animation Details
-        AnimationDrawable animationDrawable =
-                (AnimationDrawable) vDrawerNavView.getHeaderView(0).getBackground();
-        animationDrawable.setEnterFadeDuration(2000);
-        animationDrawable.setExitFadeDuration(2000);
-        animationDrawable.start();
-
-        // Drawer Panel Dynamically Change Title
-        TextView vDrawerTitle = (TextView) vDrawerNavView.getHeaderView(0).findViewById(R.id.main_drawer_header_title);
-        vDrawerTitle.setText("Martin Shaw");
 
 
 
@@ -137,9 +189,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // for ActivityCompat#requestPermissions for more details.
             return;
         } else {
-
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
         }
 
 
@@ -155,9 +205,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.currentLocation.setLatitude(location.getLatitude());
         this.currentLocation.setLongitude(location.getLongitude());
 
-        getSupportActionBar().setTitle(Double.toString(location.getLatitude()));
-        vToolbar.setSubtitle(Double.toString(location.getLongitude()));
     }
+
+
+
+
 
 
 
@@ -167,6 +219,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         inflater.inflate(R.menu.menu_main_toolbar, menu);
         return true;
     }
+
+
+
+
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -185,6 +242,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return true;
     }
+
+
+
+
+
+
 
 
     @Override
@@ -236,25 +299,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
+
+
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
 
             case R.id.main_drawer_nav_item_1: {
+
                 Toast.makeText(this, "Drawer Menu Item #1 was clicked!", Toast.LENGTH_SHORT).show();
 
                 break;
+
             }
             case R.id.main_drawer_nav_item_signout: {
+
                 Toast.makeText(this, "Signing out ...", Toast.LENGTH_SHORT).show();
                 prefs.edit().putBoolean("isSignedIn", false).apply();
+                prefs.edit().putString("sessionKey", "").apply();
 
                 Intent intent = new Intent(this, SplashscreenActivity.class);
                 startActivity(intent);
                 finish();
 
                 break;
+
+            }
+            case R.id.main_drawer_nav_item_about: {
+
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
+
+                break;
+
             }
 
         }
@@ -263,6 +343,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         vDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
 
 }

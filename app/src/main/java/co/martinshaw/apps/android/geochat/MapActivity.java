@@ -48,8 +48,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public float highestZoom = 20f; // 20 is the highest zoom level allowed by Google Maps
     public float deltaZoom;
 
-    public float lowestRadius = 500f;
-    public float highestRadius = 10f;
+    public float lowestRadius = 550f;
+    public float highestRadius = 17f;
     public float deltaRadius;
 
     public float radiusIncrement;
@@ -59,6 +59,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     Circle circle;
     Location initialLocation;
 
+    LatLng googInitialLocation;
 
 
 
@@ -101,7 +102,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
         // Change Map default camera location ...
-        LatLng googInitialLocation = new LatLng(this.initialLocation.getLatitude(), this.initialLocation.getLongitude());
+        googInitialLocation = new LatLng(this.initialLocation.getLatitude(), this.initialLocation.getLongitude());
 //        mMap.addMarker(new MarkerOptions().position(googInitialLocation).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(googInitialLocation, 14f));
 //        mMap.moveCamera(CameraUpdateFactory.zoomTo(16.75f));
@@ -148,19 +149,49 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onCameraChange(CameraPosition position)
             {
 
-                deltaZoom = highestZoom - position.zoom;
-                deltaRadius = lowestRadius - highestRadius;
+//                deltaZoom = highestZoom - position.zoom;
+//                deltaRadius = lowestRadius - highestRadius;
+//
+//                radiusIncrement = (lowestRadius - highestRadius) / (highestZoom - lowestZoom);
+//                    // delta(radius) / delta(zoom) = ~77.727272727272..
+//
+//                currentRadius = highestRadius + (deltaZoom * radiusIncrement);
+//
+//
+//                circle.setRadius(currentRadius);
+//
+//
+//                Log.i("MAP ZOOM", "Current Zoom Level: "+position.zoom+"\nDzoom: "+deltaZoom+"\nDradius: "+deltaRadius+"\nRincrement: "+radiusIncrement+"\nRcurrent: "+currentRadius+"");
 
-                radiusIncrement = (lowestRadius - highestRadius) / (highestZoom - lowestZoom);
-                    // delta(radius) / delta(zoom) = ~77.727272727272..
+                switch ((int) Math.round(position.zoom)){
+                    case 20:
+                        circle.setRadius(highestRadius);
+                        break;
 
-                currentRadius = highestRadius + (deltaZoom * radiusIncrement);
+                    case 19:
+                        circle.setRadius(37f);
+                        break;
 
+                    case 18:
+                        circle.setRadius(74f);
+                        break;
 
-                circle.setRadius(currentRadius);
+                    case 17:
+                        circle.setRadius(147f);
+                        break;
 
+                    case 16:
+                        circle.setRadius(285f);
+                        break;
 
-                Log.i("MAP ZOOM", "Current Zoom Level: "+position.zoom+"\nDzoom: "+deltaZoom+"\nDradius: "+deltaRadius+"\nRincrement: "+radiusIncrement+"\nRcurrent: "+currentRadius+"");
+                    case 15:
+                        circle.setRadius(lowestRadius);
+                        break;
+
+                    default:
+                        break;
+                }
+
 
             }
         };

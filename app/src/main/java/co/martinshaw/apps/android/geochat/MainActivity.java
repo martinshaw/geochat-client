@@ -129,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         vFloatingActionBtn.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(), "* Will open Message Compose view... *", Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(self, MapActivity.class);
                         intent.putExtra("CURRENT_LOCATION_LAT", currentLocation.getLatitude());

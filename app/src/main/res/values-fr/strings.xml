@@ -16,4 +16,13 @@
     <string name="regist_welcomeinfo_slidehint">Découvrez les fonctionnalités de GeoChat,\nfaites glisser vers la gauche &#x2192;</string>
     <string name="error_network_connection">Vous devez être connecté à Internet pour accéder à GeoChat</string>
     <string name="error_signin">"Une erreur s'est produite lors de la tentative de connexion! "</string>
+    <string name="regist_welcomeinfo_2_paragraph">Envoyez et recevez des messages de personnes à proximité. De votre bureau à votre domicile, de votre rue à votre quartier...</string>
+    <string name="regist_welcomeinfo_2_title">Qu\'est-ce que GeoChat?</string>
+    <string name="title_activity_map">Carte</string>
+    <string name="map_hint">Utilisez les boutons de zoom ci-dessous pour sélectionner le rayon autour de votre position actuelle...</string>
+    <string name="drawer_section_actions">Actions de l\'utilisateur</string>
+    <string name="drawer_item_signout">Déconnectez-vous de GeoChat...</string>
+    <string name="drawer_section_about">À propos de l\'application</string>
+    <string name="drawer_item_feedback">Donnez votre avis</string>
+    <string name="drawer_item_about">Au sujet de GeoChat</string>
 </resources>

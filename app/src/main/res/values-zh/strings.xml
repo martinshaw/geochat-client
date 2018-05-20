@@ -16,4 +16,13 @@
     <string name="regist_welcomeinfo_slidehint">探索GeoChat的功能，向左滑动 &#x2192;</string>
     <string name="error_network_connection">您必须连接到互联网才能访问 GeoChat!</string>
     <string name="error_signin">尝试登录时发生错误!</string>
+    <string name="regist_welcomeinfo_2_paragraph">发送和接收来自附近人员的消息。 从你的办公室到你的家，从你的街道到你的邻居...</string>
+    <string name="regist_welcomeinfo_2_title">"什么是 GeoChat? "</string>
+    <string name="title_activity_map">地图</string>
+    <string name="map_hint">使用下面的缩放按钮选择您当前位置周围的半径...</string>
+    <string name="drawer_section_actions">用户操作</string>
+    <string name="drawer_item_signout">"从 GeoChat 注销... "</string>
+    <string name="drawer_section_about">关于应用程序</string>
+    <string name="drawer_item_feedback">给予反馈</string>
+    <string name="drawer_item_about">关于 GeoChat</string>
 </resources>

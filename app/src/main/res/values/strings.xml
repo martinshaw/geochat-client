@@ -23,10 +23,12 @@
     <string name="error_signin">An error has occurred while attempting to sign-in!</string>
 
     <string name="title_activity_map">Map</string>
+    <string name="map_hint">Use the zoom buttons below to select the radius around your current location…</string>
 
     <string name="drawer_section_actions">User Actions</string>
     <string name="drawer_item_signout">Sign out from GeoChat…</string>
     <string name="drawer_section_about">About the app</string>
     <string name="drawer_item_feedback">Give Feedback</string>
     <string name="drawer_item_about">About GeoChat</string>
+
 </resources>

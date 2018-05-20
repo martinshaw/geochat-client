@@ -10,65 +10,77 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-public class GeolocationService extends Service {
-    private static final String TAG = "GEOCHAT_GEOSERVICE";
+public class GeolocationService extends Service
+{
+    private static final String TAG = "GEOCHAT_GEOLOCATE";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 100;
-    private static final float LOCATION_DISTANCE = 1f;
+    private static final int LOCATION_INTERVAL = 10000;
+    private static final float LOCATION_DISTANCE = 1;
 
-    public class LocationListener implements android.location.LocationListener {
+    class LocationListener implements android.location.LocationListener
+    {
         Location mLastLocation;
 
-        LocationListener(String provider) {
+        LocationListener(String provider)
+        {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
 
+            onLocationChanged(mLastLocation);
         }
 
         @Override
-        public void onLocationChanged(Location location) {
+        public void onLocationChanged(Location location)
+        {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
 
-            Log.i(TAG, String.valueOf(location.getLatitude()));
-            Log.i(TAG, String.valueOf(location.getLongitude()));
+            Log.e(TAG+"_FOUND", location.getLatitude()+" : "+location.getLongitude());
+//            Toast.makeText(GeolocationService.this, location.getLatitude()+" : "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), location.getLatitude()+" : "+location.getLongitude(), Toast.LENGTH_SHORT).show();
         }
 
         @Override
-        public void onProviderDisabled(String provider) {
+        public void onProviderDisabled(String provider)
+        {
             Log.e(TAG, "onProviderDisabled: " + provider);
         }
 
         @Override
-        public void onProviderEnabled(String provider) {
+        public void onProviderEnabled(String provider)
+        {
             Log.e(TAG, "onProviderEnabled: " + provider);
         }
 
         @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
+        public void onStatusChanged(String provider, int status, Bundle extras)
+        {
             Log.e(TAG, "onStatusChanged: " + provider);
         }
     }
 
-    LocationListener[] mLocationListeners = new LocationListener[]{
+    LocationListener[] mLocationListeners = new LocationListener[] {
             new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
 
     @Override
-    public IBinder onBind(Intent arg0) {
+    public IBinder onBind(Intent arg0)
+    {
         return null;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
         Log.e(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         Log.e(TAG, "onCreate");
         initializeLocationManager();
         try {
@@ -92,7 +104,8 @@ public class GeolocationService extends Service {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         Log.e(TAG, "onDestroy");
         super.onDestroy();
         if (mLocationManager != null) {

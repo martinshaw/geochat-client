@@ -71,6 +71,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+        // START TESTING GEOLOCATION SERVICE
+        startService(new Intent(this, GeolocationService.class));
+
+
+
+
+
 
 
 
@@ -148,41 +155,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Set default "current" location for before detection of actual location
         currentLocation = new Location("");
-        currentLocation.setLatitude(51.509865);     // Use London as default location
-        currentLocation.setLongitude(-0.118092);
+        currentLocation.setLatitude(53.480953);     // Use Manchester Piccadilly Gardens as default location
+        currentLocation.setLongitude(-2.236873);
 
-        // Get last geo-location detected location
-        locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-        // Define a listener that responds to location updates
-        locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
-                setCurrentLocation(location);
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-        };
-
-        // Register the listener with the Location Manager to receive location updates
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        } else {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        }
 
 
 
@@ -198,6 +173,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.currentLocation.setLongitude(location.getLongitude());
 
     }
+
+
+
+
+
 
 
 

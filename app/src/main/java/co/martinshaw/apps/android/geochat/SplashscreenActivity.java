@@ -44,7 +44,7 @@ public class SplashscreenActivity extends AppCompatActivity {
 
         // Force wait for 1 second for testing
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

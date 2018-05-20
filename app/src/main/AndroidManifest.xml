@@ -66,6 +66,11 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
+        <service
+            android:name=".GeolocationService"
+            android:enabled="true"
+            android:label="Geolocation Services for GeoChat"/>
+
     </application>
 
 </manifest>

@@ -44,5 +44,4 @@ dependencies {
     compile 'com.androidadvance.surveylib:surveylib:0.0.1'
 
 
-
 }

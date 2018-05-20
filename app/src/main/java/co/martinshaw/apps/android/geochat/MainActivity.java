@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
@@ -16,7 +17,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -25,18 +25,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.andrognito.flashbar.Flashbar;
 import com.androidadvance.androidsurvey.SurveyActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
+import mehdi.sakout.aboutpage.AboutPage;
+import mehdi.sakout.aboutpage.Element;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -50,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Location currentLocation;
 
     final int FEEDBACK_QUIZ_REQUEST = 1337;
-    final int GEOLOCATION_PERMISSION_REQUEST_CODE = 2000;
 
 
 
@@ -61,46 +66,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         prefs = this.getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
-
-
-
-
-
-
-
-
-        // Flashbar Greeting view
-        new Flashbar.Builder(this)
-            .gravity(Flashbar.Gravity.TOP)
-            .title("Welcome Back, Martin !")
-            .message("There are 10 Geochatters in 10 metres of your location.")
-            .backgroundDrawable(R.drawable.main_drawer_background_gradient)
-            .build();
-
-
-
-
-
-
-
-
-        // Start Geo-location Service
-        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        if (result == PackageManager.PERMISSION_GRANTED){
-
-            startGeolocationService();
-
-        } else {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, GEOLOCATION_PERMISSION_REQUEST_CODE);
-            }
-
-        }
-
-
 
 
 
@@ -125,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Drawer Panel Dynamically Change Title
         TextView vDrawerTitle = (TextView) vDrawerNavView.getHeaderView(0).findViewById(R.id.main_drawer_header_title);
         vDrawerTitle.setText("Martin Shaw");
-
 
 
 
@@ -230,7 +194,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void setCurrentLocation(Location location){
-
         this.currentLocation.setLatitude(location.getLatitude());
         this.currentLocation.setLongitude(location.getLongitude());
 
@@ -273,39 +236,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
-
-
-
-
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-
-            case GEOLOCATION_PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startGeolocationService();
-                }
-                break;
-
-            default:
-                break;
-
-        }
-    }
-
-
-
-
-
-
-    public void startGeolocationService(){
-
-        startService(new Intent(this, GeolocationService.class));
-
-    }
 
 
 

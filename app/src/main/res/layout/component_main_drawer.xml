@@ -18,7 +18,7 @@
             android:id="@+id/main_drawer_header_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="My header title"
             android:textSize="9pt"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 

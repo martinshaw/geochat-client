@@ -8,7 +8,9 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,16 +39,26 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    public SeekBar zoomSeekBar;
+
     private GoogleMap mMap;
     private LocationManager locationManager;
 
-    public float lowestZoom = 14f;
-//    public float radiusIncrement = 0.001f; // for polygon
-//    public float radiusIncrement = 900; // for circle, when at 14 zoom
-    public float radiusIncrement = 950/lowestZoom; // 950 (ideal size at lowest zoom) / 14f (lowest zoom level)
-    Circle circle;
+    public float lowestZoom = 15f;
+    public float highestZoom = 19f;
+    public float deltaZoom;
 
+    public float lowestRadius = 600f;
+    public float highestRadius = 30f;
+    public float deltaRadius;
+
+    public float radiusIncrement;
+
+    public float currentRadius;
+
+    Circle circle;
     Location initialLocation;
+
 
 
 
@@ -96,19 +109,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // Set Max. / Min. zoom bounds
         mMap.setMinZoomPreference(lowestZoom);
-        mMap.setMaxZoomPreference(25);
+        mMap.setMaxZoomPreference(highestZoom);
 
 
         // Set UI Config for unique map operation
         mMap.getUiSettings().setAllGesturesEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomGesturesEnabled(false);
 
 
 
         // Create circle polygon on map
         circle = mMap.addCircle(new CircleOptions()
             .center(googInitialLocation)
-            .radius(radiusIncrement * lowestZoom)
+            .radius(lowestRadius)
             .strokeColor(Color.argb(190, 200, 200, 200))
             .fillColor(Color.argb(40, 111, 111, 111)));
 
@@ -116,44 +130,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnCameraChangeListener(getCameraChangeListener());
 
 
-
-//        PolygonOptions rectOptions = new PolygonOptions()
-//                .add(
-//                    addVarianceToLocation(initialLocation, -radiusIncrement, -radiusIncrement),
-//                    addVarianceToLocation(initialLocation, -radiusIncrement, radiusIncrement),
-//                    addVarianceToLocation(initialLocation, radiusIncrement, radiusIncrement),
-//                    addVarianceToLocation(initialLocation, radiusIncrement, -radiusIncrement),
-//                    addVarianceToLocation(initialLocation, -radiusIncrement, -radiusIncrement)
-//                );
-//
-//        Polygon polygon = mMap.addPolygon(
-//            rectOptions
-//            .strokeColor(Color.argb(190, 200, 200, 200))
-//            .fillColor(Color.argb(40, 111, 111, 111))
-//        );
+        setupSeekBar();
 
 
 
 
-    }
-
-
-
-
-    public LatLng addVarianceToLocation(Location location, float x, float y){
-        return new LatLng(
-                location.getLatitude() + x,
-                location.getLongitude() + y
-        );
-    }
-
-
-
-    public LatLng addVarianceToLocation(LatLng latlong, float x, float y){
-        return new LatLng(
-                latlong.latitude + x,
-                latlong.longitude + y
-        );
     }
 
 
@@ -167,16 +148,56 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onCameraChange(CameraPosition position)
             {
 
-                float radiusAtFullSize = radiusIncrement * lowestZoom;
-                float zoomDelta = position.zoom - lowestZoom;
-                float radiusDeltaFromFullSize = zoomDelta * radiusIncrement;
+                deltaZoom = highestZoom - position.zoom;
+                deltaRadius = lowestRadius - highestRadius;
 
-                Log.i("MAP ZOOM", Float.toString(radiusAtFullSize) + " " + Float.toString(radiusDeltaFromFullSize) + " " + Float.toString(position.zoom));
+                radiusIncrement = (lowestRadius - highestRadius) / (highestZoom - lowestZoom);
+                    // delta(radius) / delta(zoom) = ~77.727272727272..
 
-                circle.setRadius(radiusAtFullSize - radiusDeltaFromFullSize);
+                currentRadius = highestRadius + (deltaZoom * radiusIncrement);
+
+                circle.setRadius(currentRadius);
+//                circle.setRadius(currentRadius * ((currentRadius/currentRadius)*.5));
+
+
+                Log.i("MAP ZOOM", "Current Zoom Level: "+position.zoom+"\nDzoom: "+deltaZoom+"\nDradius: "+deltaRadius+"\nRincrement: "+radiusIncrement+"\nRcurrent: "+currentRadius+"");
 
             }
         };
+    }
+
+
+
+
+    public void setupSeekBar () {
+        try
+        {
+            zoomSeekBar = (SeekBar)findViewById(R.id.zoomSeekBar);
+            zoomSeekBar.setMax(Math.round(highestZoom)-Math.round(lowestZoom));
+
+            zoomSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+            {
+                @Override
+                public void onStopTrackingTouch(SeekBar arg0)
+                {
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar arg0)
+                {
+                }
+
+                @Override
+                public void onProgressChanged(SeekBar arg0, int progress, boolean arg2)
+                {
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(lowestZoom + progress));
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
 

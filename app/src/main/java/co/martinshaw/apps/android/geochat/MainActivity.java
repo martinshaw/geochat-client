@@ -102,25 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             vToolbar.setTitleTextColor(getResources().getColor(R.color.md_black_1000, null));
 //            vToolbar.setLogo(getResources().getDrawable(R.drawable.geochat_logo,null));
 
-            mDrawerToggle = new ActionBarDrawerToggle(this, vDrawerLayout, vToolbar, R.string.app_name, R.string.app_name)
-            {
-
-                public void onDrawerClosed(View view)
-                {
-                    supportInvalidateOptionsMenu();
-                    //drawerOpened = false;
-                }
-
-                public void onDrawerOpened(View drawerView)
-                {
-                    supportInvalidateOptionsMenu();
-                    //drawerOpened = true;
-                }
-            };
-            mDrawerToggle.setDrawerIndicatorEnabled(true);
-            vDrawerLayout.setDrawerListener(mDrawerToggle);
-            mDrawerToggle.syncState();
-
+            actionBar.setHomeAsUpIndicator(R.drawable.geochat_logo_large_foreground );
         }
 
 
@@ -142,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         intent.putExtra("CURRENT_LOCATION_LAT", currentLocation.getLatitude());
                         intent.putExtra("CURRENT_LOCATION_LONG", currentLocation.getLongitude());
                         startActivity(intent);
-                        finish();
+
                     }
                 }
         );

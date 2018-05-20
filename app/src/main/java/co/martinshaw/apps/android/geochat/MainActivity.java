@@ -11,6 +11,8 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -33,6 +35,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidadvance.androidsurvey.SurveyActivity;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
 import mehdi.sakout.aboutpage.AboutPage;
 import mehdi.sakout.aboutpage.Element;
 
@@ -46,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LocationManager locationManager;
     LocationListener locationListener;
     Location currentLocation;
+
+    final int FEEDBACK_QUIZ_REQUEST = 1337;
+
 
 
     @Override
@@ -210,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        if(prefs.getBoolean("areAlertsEnabled", false) == true){
+        if(prefs.getBoolean("areAlertsEnabled", false)){
             menu.getItem(0).setIcon(R.drawable.ic_notifications_active_black_24dp);
         } else {
             menu.getItem(0).setIcon(R.drawable.ic_notifications_off_black_24dp);
@@ -285,6 +296,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
+    private String loadSurveyJson(String filename) {
+        try {
+            InputStream is = getAssets().open(filename);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            return new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+
+
+
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
@@ -310,6 +342,70 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             }
+            case R.id.main_drawer_nav_item_feedback: {
+
+                Intent i_survey = new Intent(this, SurveyActivity.class);
+                i_survey.putExtra(
+                        "json_survey",
+                        "{\n" +
+                                "  \"survey_properties\": {\n" +
+                                "    \"intro_message\": \"<strong>Your feedback helps us to build a better mobile product.</strong><br><br><br>   Hello, Feedback from our clients, friends and family is how we make key decisions on what the future holds for XYZ App.<br><br>By combining data and previous feedback we have introduced many new features e.g. x, y, z.<br><br>It will take less than 2 minutes to answer the feedback quiz.\",\n" +
+                                "    \"end_message\": \"Thank you for having the time to take our survey.\",\n" +
+                                "    \"skip_intro\": false\n" +
+                                "  },\n" +
+                                "  \"questions\": [\n" +
+                                "    {\n" +
+                                "      \"question_type\": \"Checkboxes\",\n" +
+                                "      \"question_title\": \"What were you hoping the XYZ mobile app would do?\",\n" +
+                                "      \"description\": \"(Select all that apply)\",\n" +
+                                "      \"required\": false,\n" +
+                                "      \"random_choices\": false,\n" +
+                                "      \"choices\": [\n" +
+                                "        \"thing #1\",\n" +
+                                "        \"thing #2\",\n" +
+                                "        \"thing #3\",\n" +
+                                "        \"thing #4\"\n" +
+                                "      ]\n" +
+                                "    },\n" +
+                                "    {\n" +
+                                "      \"question_type\": \"Checkboxes\",\n" +
+                                "      \"question_title\": \"Do you currently use one of these other software solutions?\",\n" +
+                                "      \"description\": \"\",\n" +
+                                "      \"required\": false,\n" +
+                                "      \"random_choices\": true,\n" +
+                                "      \"choices\": [\n" +
+                                "        \"<font color='#AA0000'>Yes, I use a <strong>red</strong> product</font>\",\n" +
+                                "        \"I use a <font color='#00AA00'>green product</font>\",\n" +
+                                "        \"I partialy use a <font color='#0000AA'><strong>blue</strong></font> product\"\n" +
+                                "      ]\n" +
+                                "    },\n" +
+                                "    {\n" +
+                                "      \"question_type\": \"String\",\n" +
+                                "      \"question_title\": \"Why did you not subscribe at the end of your free trial ?\",\n" +
+                                "      \"description\": \"\",\n" +
+                                "      \"required\": false\n" +
+                                "    },\n" +
+                                "    {\n" +
+                                "      \"question_title\": \"If this app was paid, how much you would give to have it ?\",\n" +
+                                "      \"description\": \"\",\n" +
+                                "      \"required\": false,\n" +
+                                "      \"question_type\": \"Number\"\n" +
+                                "    },\n" +
+                                "    {\n" +
+                                "      \"question_type\": \"StringMultiline\",\n" +
+                                "      \"question_title\": \"We love feedback and if there is anything else you’d like us to improve please let us know.\",\n" +
+                                "      \"description\": \"\",\n" +
+                                "      \"required\": false,\n" +
+                                "      \"number_of_lines\": 4\n" +
+                                "    }\n" +
+                                "  ]\n" +
+                                "}"
+                );
+                startActivityForResult(i_survey, FEEDBACK_QUIZ_REQUEST);
+
+                break;
+
+            }
             case R.id.main_drawer_nav_item_about: {
 
                 Intent intent = new Intent(this, AboutActivity.class);
@@ -325,6 +421,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         vDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // On receiving response from feedback quiz....
+        // Have the user send the pre-composed email message
+        if (requestCode == FEEDBACK_QUIZ_REQUEST) {
+            if (resultCode == RESULT_OK) {
+
+                String answers_json = data.getExtras().getString("answers");
+                Log.d("****", "****************** WE HAVE ANSWERS ******************");
+                Log.v("ANSWERS JSON", answers_json);
+                Log.d("****", "*****************************************************");
+
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:"));
+                intent.putExtra(Intent.EXTRA_EMAIL  , new String[] { "thirdyearproject@martinshaw.co" });
+                intent.putExtra(Intent.EXTRA_SUBJECT, "GeoChat App Feedback: ");
+                intent.putExtra(Intent.EXTRA_TEXT,
+                        "Thank you so much for providing feedback for our Application.\n\n"+
+                                "This will allow us to improve the app for yourself and for new users in the future.\n\n"+
+                                "Please press \"Send Message\"...\n\n\n\n\n\n"+
+                                answers_json+"\n\n"+
+                                System.getProperty("os.version")+"\n"+
+                                ((Build.VERSION.SDK != null)? Build.VERSION.SDK : "")+"\n"+
+                                ((Build.DEVICE != null)? Build.DEVICE : "")+"\n"+
+                                ((Build.MODEL != null)? Build.MODEL : "")+"\n"+
+                                ((Build.PRODUCT != null)? Build.PRODUCT : "")+"\n\n"+
+                                "==== message end ====");
+
+                startActivity(Intent.createChooser(intent, "Email via..."));
+
+            }
+        }
+
+    }
+
+
 
 
 

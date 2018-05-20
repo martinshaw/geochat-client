@@ -45,11 +45,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private LocationManager locationManager;
 
     public float lowestZoom = 15f;
-    public float highestZoom = 19f;
+    public float highestZoom = 20f;
     public float deltaZoom;
 
     public float lowestRadius = 600f;
-    public float highestRadius = 30f;
+    public float highestRadius = 10f;
     public float deltaRadius;
 
     public float radiusIncrement;
@@ -116,6 +116,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.getUiSettings().setAllGesturesEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(false);
+        mMap.getUiSettings().setIndoorLevelPickerEnabled(false);
 
 
 
@@ -156,8 +157,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 currentRadius = highestRadius + (deltaZoom * radiusIncrement);
 
+//                circle.setRadius(currentRadius);
                 circle.setRadius(currentRadius);
-//                circle.setRadius(currentRadius * ((currentRadius/currentRadius)*.5));
 
 
                 Log.i("MAP ZOOM", "Current Zoom Level: "+position.zoom+"\nDzoom: "+deltaZoom+"\nDradius: "+deltaRadius+"\nRincrement: "+radiusIncrement+"\nRcurrent: "+currentRadius+"");
@@ -168,12 +169,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
 
-
+    /*
+    * !!
+    * SeekBar does not accept non-whole numbers as a value.
+    * So, for example, there are only 12 steps between 14 and 25.
+    *
+    * For more detail and gradation, I will multiply by a hundred
+    * then divide by a hundred. Allowing decimal detail to remain.
+    * */
     public void setupSeekBar () {
         try
         {
+            int seekBarRange = Math.round((highestZoom - lowestZoom) * 100);
+
             zoomSeekBar = (SeekBar)findViewById(R.id.zoomSeekBar);
-            zoomSeekBar.setMax(Math.round(highestZoom)-Math.round(lowestZoom));
+            zoomSeekBar.setMax(seekBarRange);
 
             zoomSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
             {
@@ -190,7 +200,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 @Override
                 public void onProgressChanged(SeekBar arg0, int progress, boolean arg2)
                 {
-                    mMap.moveCamera(CameraUpdateFactory.zoomTo(lowestZoom + progress));
+                    float progressDecimal = progress / 100;
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(lowestZoom + progressDecimal));
                 }
             });
         }

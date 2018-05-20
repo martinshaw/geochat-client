@@ -41,4 +41,7 @@ dependencies {
 
     compile 'com.github.medyo:android-about-page:1.2.4'
 
+    compile 'com.androidadvance.surveylib:surveylib:0.0.1'
+
+
 }

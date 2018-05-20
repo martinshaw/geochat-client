@@ -4,10 +4,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -25,26 +27,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidadvance.androidsurvey.SurveyActivity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-
-import mehdi.sakout.aboutpage.AboutPage;
-import mehdi.sakout.aboutpage.Element;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LocationListener {
 
     Toolbar vToolbar;
 
@@ -52,11 +44,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SharedPreferences prefs;
 
     LocationManager locationManager;
-    LocationListener locationListener;
     Location currentLocation;
+    int geolocationTimeInterval = 2000;
+    int geolocationDistance = 1;
+    String geolocationProvider;
 
     final int FEEDBACK_QUIZ_REQUEST = 1337;
-
+    final int GEOLOCATION_PERMISSION_REQUEST = 1338;
 
 
     @Override
@@ -66,20 +60,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         prefs = this.getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
-
-
-
-
-
-        // START TESTING GEOLOCATION SERVICE
-        startService(new Intent(this, GeolocationService.class));
-
-
-
-
-
-
-
 
 
         // Drawer Panel Setup & onClick Events
@@ -99,12 +79,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         vDrawerTitle.setText("Martin Shaw");
 
 
-
-
-
-
-
-
         // Setup Action Bar (Toolbar)
         vToolbar = findViewById(R.id.main_toolbar);
         ActionBarDrawerToggle mDrawerToggle;
@@ -120,15 +94,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             vToolbar.setTitleTextColor(getResources().getColor(R.color.md_black_1000, null));
 //            vToolbar.setLogo(getResources().getDrawable(R.drawable.geochat_logo,null));
 
-            actionBar.setHomeAsUpIndicator(R.drawable.geochat_logo_large_foreground );
+            actionBar.setHomeAsUpIndicator(R.drawable.geochat_logo_large_foreground);
         }
-
-
-
-
-
-
-
 
 
         // Floating Action Button onClick Event
@@ -147,42 +114,77 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         );
 
 
-
-
-
-
-
-
         // Set default "current" location for before detection of actual location
         currentLocation = new Location("");
         currentLocation.setLatitude(53.480953);     // Use Manchester Piccadilly Gardens as default location
         currentLocation.setLongitude(-2.236873);
 
 
-
-
+        setupGeolocationFunctionality();
 
 
     }
 
 
-
-
-    public void setCurrentLocation(Location location){
+    public void setCurrentLocation(Location location) {
         this.currentLocation.setLatitude(location.getLatitude());
         this.currentLocation.setLongitude(location.getLongitude());
 
     }
 
+    public void setupGeolocationFunctionality() {
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
+            Toast.makeText(this, "TRYING TO GET PERMISSIONS", Toast.LENGTH_SHORT).show();
 
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, GEOLOCATION_PERMISSION_REQUEST);
 
+        } else {
 
+            Toast.makeText(this, "FOUND PERMISSIONS, SETTING UP GEOLOCATION", Toast.LENGTH_SHORT).show();
 
+            Criteria criteria = new Criteria();
+//            geolocationProvider = locationManager.getBestProvider(criteria, false);
+            geolocationProvider = LocationManager.NETWORK_PROVIDER;
 
+            locationManager.requestLocationUpdates(geolocationProvider, geolocationTimeInterval, geolocationDistance, this);
 
+//            currentLocation = locationManager.getLastKnownLocation(geolocationProvider);
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case GEOLOCATION_PERMISSION_REQUEST:
+
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                        locationManager.requestLocationUpdates(geolocationProvider, geolocationTimeInterval, geolocationDistance, this);
+
+                    }
+
+                } else {
+
+                    Toast.makeText(this, "GEOLOCATION PERMISSION WAS NOT GRANTED", Toast.LENGTH_SHORT).show();
+
+                }
+
+                break;
+
+            default:
+
+                break;
+
+        }
+    }
 
 
     @Override
@@ -193,14 +195,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
-
-
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        if(prefs.getBoolean("areAlertsEnabled", false)){
+        if (prefs.getBoolean("areAlertsEnabled", false)) {
             menu.getItem(0).setIcon(R.drawable.ic_notifications_active_black_24dp);
         } else {
             menu.getItem(0).setIcon(R.drawable.ic_notifications_off_black_24dp);
@@ -214,12 +212,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return true;
     }
-
-
-
-
-
-
 
 
     @Override
@@ -248,12 +240,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 // Alternate button icon depending on current state
                 icon = item.getIcon();
-                if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_notifications_active_black_24dp, null).getConstantState())){
+                if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_notifications_active_black_24dp, null).getConstantState())) {
                     item.setIcon(R.drawable.ic_notifications_off_black_24dp);
                     Toast.makeText(this, "Notifications & alerts turned off!", Toast.LENGTH_SHORT).show();
                     prefs.edit().putBoolean("areAlertsEnabled", false).apply();
 
-                } else if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_notifications_off_black_24dp,null).getConstantState())){
+                } else if (icon.getConstantState().equals(getResources().getDrawable(R.drawable.ic_notifications_off_black_24dp, null).getConstantState())) {
                     item.setIcon(R.drawable.ic_notifications_active_black_24dp);
                     Toast.makeText(this, "Notifications & alerts turned on!", Toast.LENGTH_SHORT).show();
                     prefs.edit().putBoolean("areAlertsEnabled", true).apply();
@@ -268,32 +260,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return true;
     }
-
-
-
-
-
-
-
-
-    private String loadSurveyJson(String filename) {
-        try {
-            InputStream is = getAssets().open(filename);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            return new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-
-
-
-
 
 
     @Override
@@ -402,10 +368,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
-
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -421,18 +383,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:"));
-                intent.putExtra(Intent.EXTRA_EMAIL  , new String[] { "thirdyearproject@martinshaw.co" });
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"thirdyearproject@martinshaw.co"});
                 intent.putExtra(Intent.EXTRA_SUBJECT, "GeoChat App Feedback: ");
                 intent.putExtra(Intent.EXTRA_TEXT,
-                        "Thank you so much for providing feedback for our Application.\n\n"+
-                                "This will allow us to improve the app for yourself and for new users in the future.\n\n"+
-                                "Please press \"Send Message\"...\n\n\n\n\n\n"+
-                                answers_json+"\n\n"+
-                                System.getProperty("os.version")+"\n"+
-                                ((Build.VERSION.SDK != null)? Build.VERSION.SDK : "")+"\n"+
-                                ((Build.DEVICE != null)? Build.DEVICE : "")+"\n"+
-                                ((Build.MODEL != null)? Build.MODEL : "")+"\n"+
-                                ((Build.PRODUCT != null)? Build.PRODUCT : "")+"\n\n"+
+                        "Thank you so much for providing feedback for our Application.\n\n" +
+                                "This will allow us to improve the app for yourself and for new users in the future.\n\n" +
+                                "Please press \"Send Message\"...\n\n\n\n\n\n" +
+                                answers_json + "\n\n" +
+                                System.getProperty("os.version") + "\n" +
+                                ((Build.VERSION.SDK != null) ? Build.VERSION.SDK : "") + "\n" +
+                                ((Build.DEVICE != null) ? Build.DEVICE : "") + "\n" +
+                                ((Build.MODEL != null) ? Build.MODEL : "") + "\n" +
+                                ((Build.PRODUCT != null) ? Build.PRODUCT : "") + "\n\n" +
                                 "==== message end ====");
 
                 startActivity(Intent.createChooser(intent, "Email via..."));
@@ -443,8 +405,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(this, "Resuming Geolocation", Toast.LENGTH_SHORT).show();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(geolocationProvider, geolocationTimeInterval, geolocationDistance, this);
+    }
 
 
 
 
+
+
+
+    // Geolocation methods inherited from 'LocationListener' interface
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLocation.setLongitude(location.getLongitude());
+        currentLocation.setLatitude(location.getLatitude());
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.main_drawer).setBackgroundColor(Color.RED);
+                Toast.makeText(MainActivity.this,"Location Change Detected: " + currentLocation.getLatitude() + " : " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Toast.makeText(this,"Location Provider Status Changed: " + provider + " : " + status, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Toast.makeText(this,"Location Provider Enabled: "+provider, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Toast.makeText(this,"Location Provider Disabled: "+provider, Toast.LENGTH_SHORT).show();
+    }
 }

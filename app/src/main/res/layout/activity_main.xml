@@ -9,51 +9,52 @@
     tools:context="co.martinshaw.apps.android.geochat.MainActivity"
     android:fitsSystemWindows="true">
 
-
     <FrameLayout
-        android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/main_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-        <ScrollView
+        <RelativeLayout
+            android:id="@+id/main_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
 
-            <TextView
-                android:id="@+id/main_geooutput"
+            <RelativeLayout
+                android:id="@+id/main_topbar_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:elevation="4dp">
 
 
-        </ScrollView>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/main_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                <it.neokree.materialtabs.MaterialTabHost
+                    android:id="@+id/main_materialTabHost"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_below="@+id/main_toolbar"
+                    app:primaryColor="@color/md_white_1000"
+                    app:textColor="@color/md_grey_900"
+                    app:accentColor="@color/geochatAccent" />
 
 
+            </RelativeLayout>
 
-        <!--<it.neokree.materialtabs.MaterialTabHost-->
-            <!--android:id="@+id/main_materialTabHost"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="48dp"-->
-            <!--android:layout_below="@+id/main_toolbar"-->
-            <!--app:primaryColor="#009688"-->
-            <!--app:accentColor="#ffc400" />-->
 
-        <!--<android.support.v4.view.ViewPager-->
-            <!--android:id="@+id/main_materialViewPager"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_below="@+id/main_materialTabHost" />-->
+            <android.support.v4.view.ViewPager
+                android:id="@+id/main_materialViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/main_topbar_container" />
 
+
+        </RelativeLayout>
 
 
         <android.support.design.widget.FloatingActionButton
@@ -66,10 +67,15 @@
             android:background="@color/geochatAccent"
             app:rippleColor="@color/md_green_100"
             android:layout_margin="22dp"
-            android:elevation="4dp" />
+            android:elevation="4dp"/>
 
 
     </FrameLayout>
+
+
+
+
+
 
 
     <android.support.design.widget.NavigationView

@@ -17,22 +17,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -40,10 +42,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,9 +56,17 @@ import com.androidadvance.androidsurvey.SurveyActivity;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import it.neokree.materialtabs.MaterialTab;
+import it.neokree.materialtabs.MaterialTabHost;
+import it.neokree.materialtabs.MaterialTabListener;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MaterialTabListener, MainThisAreaFragment.OnFragmentInteractionListener {
 
     Toolbar vToolbar;
+
+    MaterialTabHost tabHost;
+    ViewPager pager;
+    ViewPagerAdapter pagerAdapter;
 
     DrawerLayout vDrawerLayout;
     SharedPreferences prefs;
@@ -83,12 +96,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView vDrawerNavView = (NavigationView) findViewById(R.id.main_drawer);
         vDrawerNavView.setNavigationItemSelectedListener(this);
 
+
         // Drawer Panel Configure Animation Details
         AnimationDrawable animationDrawable =
                 (AnimationDrawable) vDrawerNavView.getHeaderView(0).getBackground();
         animationDrawable.setEnterFadeDuration(2000);
         animationDrawable.setExitFadeDuration(2000);
         animationDrawable.start();
+
 
         // Drawer Panel Dynamically Change Title
         TextView vDrawerTitle = (TextView) vDrawerNavView.getHeaderView(0).findViewById(R.id.main_drawer_header_title);
@@ -102,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(vToolbar);
 
+
         // Set Dynamic Contents of Action Bar Title & Subtitle
         if (actionBar != null) {
 
@@ -112,6 +128,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             actionBar.setHomeAsUpIndicator(R.drawable.geochat_logo_large_foreground);
         }
+
+
+        // Setup Material Tabs
+        setupMaterialTabs();
 
 
         // Floating Action Button onClick Event
@@ -137,6 +157,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         authoriseGeolocationFunctionality();
+
+
+    }
+
+
+
+
+
+
+
+
+
+    public void setupMaterialTabs(){
+
+        tabHost = this.findViewById(R.id.main_materialTabHost);
+        pager = this.findViewById(R.id.main_materialViewPager);
+
+        // Setup Page Fragment Pager
+        pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        pager.setAdapter(pagerAdapter);
+        pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int position) {
+                // when user do a swipe the selected tab change
+                tabHost.setSelectedNavigationItem(position);
+            }
+
+        });
+
+        // insert all tabs from Page Fragment Pager Adaptor data
+        for (int i = 0; i < pagerAdapter.getCount(); i++) {
+            tabHost.addTab( tabHost.newTab().setText(pagerAdapter.getPageTitle(i)).setTabListener(this) );
+        };
 
 
     }
@@ -178,49 +232,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setupGeolocationFunctionality() {
 
-        startService(new Intent(this, GeolocationService.class));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
+            authoriseGeolocationFunctionality();
 
-//
-//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//
-//        geolocationOutput = findViewById(R.id.main_geooutput);
-//
-//        geolocationOutput.append("\n\n\n\n\n\n\n\n\n\n");
-//
-//        geolocationOutput.append("Location Providers: ");
-//        dumpProviders();
-//
-////        Criteria criteria = new Criteria();
-////        geolocationProvider = locationManager.getBestProvider(criteria, true);
-//        geolocationProvider = LocationManager.NETWORK_PROVIDER;
-//        geolocationOutput.append("\nBest Provider is: " + geolocationProvider);
-//
-//        geolocationOutput.append("\nLocations (starting with last known): ");
-//        if (geolocationProvider != null) {
-//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//
-//                Toast.makeText(this, "Not enough permissions", Toast.LENGTH_SHORT).show();
-//
-//            } else {
-//
-////                Location location = locationManager.getLastKnownLocation(geolocationProvider);
-//
-//                Location location;
-//
-//                if (locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER) != null) {location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);}
-//                else if (locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) != null) {location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);}
-//                else if (locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);}
-//                else {location = null; }
-//
-//                dumpLocation(location);
-//
-//                // Change 'currentLocation' if not null
-//                if (location != null) { currentLocation = location; }
-//
-//            }
-//
-//        }
+        } else {
+
+            // ii
+
+        }
+
     }
 
 
@@ -539,15 +560,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         Toast.makeText(this, "Resuming Geolocation", Toast.LENGTH_SHORT).show();
 
-        if (geolocationProvider != null) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "CANNOT RESUME GEOLOCATION LISTENING", Toast.LENGTH_SHORT).show();
-            }else {
-
-                // SETUP REQUESTLOCATIONUPDATES
-
-            }
-        }
 
     }
 
@@ -573,38 +585,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+    // MaterialTabs inheritance functions
+    @Override
+    public void onTabSelected(MaterialTab tab) {
+        pager.setCurrentItem(tab.getPosition());
+    }
 
+    @Override
+    public void onTabReselected(MaterialTab tab) {
 
-    // Geolocation methods inherited from 'LocationListener' interface
+    }
 
-    private void dumpProviders() {
-        List<String> providers = locationManager.getAllProviders();
-        for (String provider: providers){
-            dumpProvider(provider);
+    @Override
+    public void onTabUnselected(MaterialTab tab) {
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
+
+        public ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+
         }
-    }
-    private void dumpProvider(String provider) {
-        LocationProvider info = locationManager.getProvider(provider);
-        StringBuilder builder = new StringBuilder();
-        builder.append("LocProvider[name = ").
-                append(info.getName()).
-                append(",enabled = ").
-                append(locationManager.isProviderEnabled(provider)).
-                append(",getAccuracy = ").
-                append(info.getAccuracy()).
-                append(", getPowerReq = ").
-                append(info.getPowerRequirement()).
-                append(", hasMoneyCost = ").
-                append(info.hasMonetaryCost()).
-                append("]");
-        geolocationOutput.append(builder.toString());
-    }
-    private void dumpLocation(Location location){
-        if (location == null){
-            geolocationOutput.append("\nLocation[unknown]");
-        } else {
-            geolocationOutput.append("\n" + location.toString());
+
+        public Fragment getItem(int num) {
+            switch (num) {
+                case 0: return MainThisAreaFragment.newInstance();
+                case 1: return MainThisAreaFragment.newInstance();
+                case 2: return MainThisAreaFragment.newInstance();
+                default: return new Fragment();
+            }
         }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0: return "THIS AREA";
+                case 1: return "SENT MESSAGES";
+                case 2: return "EXPLORE";
+                default: return String.valueOf(position);
+            }
+        }
+
     }
+
 
 }

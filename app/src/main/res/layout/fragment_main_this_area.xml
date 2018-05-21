@@ -1,0 +1,58 @@
+<!--
+  ~ fragment_main_this_area.xml
+  ~ C:/Users/martin/Android_Projects/GeoChat/app/src/main/res/layout/fragment_main_this_area.xml
+  ~
+  ~ Project: GeoChat
+  ~ Module: app
+  ~ Last Modified: 21/05/18 15:03 <martin>
+  ~ Last Compilation: 21/05/18 15:03
+  ~
+  ~ Copyright (c) 2018. Martin David Shaw. All rights reserved.
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="co.martinshaw.apps.android.geochat.MainThisAreaFragment">
+
+
+    <LinearLayout
+        android:id="@+id/main_this_area_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:id="@+id/main_this_area_mapbutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/md_white_1000"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp">
+
+
+            <TextView
+                android:id="@+id/main_this_area_mapbutton_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="21 24,21.2N 10 10,3.44E (1 Mile Radius)"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/main_this_area_mapbutton_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="La Sagrada Familla, Barcelona, Spain" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</FrameLayout>

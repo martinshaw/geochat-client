@@ -12,6 +12,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -36,6 +37,8 @@ import android.widget.Toast;
 
 import com.androidadvance.androidsurvey.SurveyActivity;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LocationListener {
 
     Toolbar vToolbar;
@@ -45,9 +48,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     LocationManager locationManager;
     Location currentLocation;
-    int geolocationTimeInterval = 2000;
+    int geolocationTimeInterval = 1000;
     int geolocationDistance = 1;
     String geolocationProvider;
+    TextView geolocationOutput;
 
     final int FEEDBACK_QUIZ_REQUEST = 1337;
     final int GEOLOCATION_PERMISSION_REQUEST = 1338;
@@ -120,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         currentLocation.setLongitude(-2.236873);
 
 
-        setupGeolocationFunctionality();
+        authoriseGeolocationFunctionality();
 
 
     }
@@ -132,29 +136,64 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    public void authoriseGeolocationFunctionality() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, GEOLOCATION_PERMISSION_REQUEST);
+
+        } else {
+
+            setupGeolocationFunctionality();
+
+        }
+    }
+
     public void setupGeolocationFunctionality() {
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        geolocationOutput = findViewById(R.id.main_geooutput);
 
-            Toast.makeText(this, "TRYING TO GET PERMISSIONS", Toast.LENGTH_SHORT).show();
+        geolocationOutput.append("\n\n\n\n\n\n\n\n\n\n");
 
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, GEOLOCATION_PERMISSION_REQUEST);
+        geolocationOutput.append("Location Providers: ");
+        dumpProviders();
 
-        } else {
+//        Criteria criteria = new Criteria();
+//        geolocationProvider = locationManager.getBestProvider(criteria, true);
+        geolocationProvider = LocationManager.NETWORK_PROVIDER;
+        geolocationOutput.append("\nBest Provider is: " + geolocationProvider);
 
-            Toast.makeText(this, "FOUND PERMISSIONS, SETTING UP GEOLOCATION", Toast.LENGTH_SHORT).show();
+        geolocationOutput.append("\nLocations (starting with last known): ");
+        if (geolocationProvider != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            Criteria criteria = new Criteria();
-//            geolocationProvider = locationManager.getBestProvider(criteria, false);
-            geolocationProvider = LocationManager.NETWORK_PROVIDER;
+                Toast.makeText(this, "Not enough permissions", Toast.LENGTH_SHORT).show();
 
-            locationManager.requestLocationUpdates(geolocationProvider, geolocationTimeInterval, geolocationDistance, this);
+            } else {
 
-//            currentLocation = locationManager.getLastKnownLocation(geolocationProvider);
+                Location location = locationManager.getLastKnownLocation(geolocationProvider);
+                dumpLocation(location);
+
+            }
 
         }
+
+
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//            Toast.makeText(this, "TRYING TO GET PERMISSIONS", Toast.LENGTH_SHORT).show();
+//
+//            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, GEOLOCATION_PERMISSION_REQUEST);
+//
+//        } else {
+//
+//            Toast.makeText(this, "FOUND PERMISSIONS, SETTING UP GEOLOCATION", Toast.LENGTH_SHORT).show();
+//
+//            locationManager.requestLocationUpdates(geolocationProvider, geolocationTimeInterval, geolocationDistance, this);
+//
+//
+//        }
 
     }
 
@@ -165,9 +204,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-                        locationManager.requestLocationUpdates(geolocationProvider, geolocationTimeInterval, geolocationDistance, this);
+                        setupGeolocationFunctionality();
 
                     }
 
@@ -409,18 +448,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         Toast.makeText(this, "Resuming Geolocation", Toast.LENGTH_SHORT).show();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+
+        if (geolocationProvider != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            locationManager.requestLocationUpdates(geolocationProvider, geolocationTimeInterval, geolocationDistance, this);
         }
-        locationManager.requestLocationUpdates(geolocationProvider, geolocationTimeInterval, geolocationDistance, this);
+
     }
+
+
+
+
+
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        locationManager.removeUpdates(this);
+
+    }
+
+
+
+
 
 
 
@@ -431,16 +492,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Geolocation methods inherited from 'LocationListener' interface
     @Override
     public void onLocationChanged(Location location) {
-        currentLocation.setLongitude(location.getLongitude());
-        currentLocation.setLatitude(location.getLatitude());
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                findViewById(R.id.main_drawer).setBackgroundColor(Color.RED);
-                Toast.makeText(MainActivity.this,"Location Change Detected: " + currentLocation.getLatitude() + " : " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        findViewById(R.id.main_container).setBackgroundColor(Color.RED);
+        dumpLocation(location);
 
     }
 
@@ -458,4 +512,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onProviderDisabled(String provider) {
         Toast.makeText(this,"Location Provider Disabled: "+provider, Toast.LENGTH_SHORT).show();
     }
+
+    private void dumpProviders() {
+        List<String> providers = locationManager.getAllProviders();
+        for (String provider: providers){
+            dumpProvider(provider);
+        }
+    }
+    private void dumpProvider(String provider) {
+        LocationProvider info = locationManager.getProvider(provider);
+        StringBuilder builder = new StringBuilder();
+        builder.append("LocProvider[name = ").
+                append(info.getName()).
+                append(",enabled = ").
+                append(locationManager.isProviderEnabled(provider)).
+                append(",getAccuracy = ").
+                append(info.getAccuracy()).
+                append(", getPowerReq = ").
+                append(info.getPowerRequirement()).
+                append(", hasMoneyCost = ").
+                append(info.hasMonetaryCost()).
+                append("]");
+        geolocationOutput.append(builder.toString());
+    }
+    private void dumpLocation(Location location){
+        if (location == null){
+            geolocationOutput.append("\nLocation[unknown]");
+        } else {
+            geolocationOutput.append("\n" + location.toString());
+        }
+    }
+
 }

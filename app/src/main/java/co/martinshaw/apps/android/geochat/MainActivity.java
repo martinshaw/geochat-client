@@ -1,4 +1,12 @@
 /*
+ * MainActivity
+ * C:/Users/martin/Android_Projects/GeoChat/app/src/main/java/co/martinshaw/apps/android/geochat/MainActivity.java
+ *
+ * Project: GeoChat
+ * Module: app
+ * Last Modified: 21/05/18 10:51 <martin>
+ * Last Compilation: 21/05/18 10:51
+ *
  * Copyright (c) 2018. Martin David Shaw. All rights reserved.
  */
 
@@ -42,10 +50,6 @@ import android.widget.Toast;
 import com.androidadvance.androidsurvey.SurveyActivity;
 
 import java.util.List;
-
-/**
- * Created by Martin Shaw on 21/05/2018 09:03 for GeoChat.
- */
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -173,6 +177,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void setupGeolocationFunctionality() {
+
+        startService(new Intent(this, GeolocationService.class));
+
+
 //
 //        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 //

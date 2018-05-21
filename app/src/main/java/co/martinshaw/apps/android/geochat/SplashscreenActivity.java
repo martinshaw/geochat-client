@@ -1,4 +1,12 @@
 /*
+ * SplashscreenActivity
+ * C:/Users/martin/Android_Projects/GeoChat/app/src/main/java/co/martinshaw/apps/android/geochat/SplashscreenActivity.java
+ *
+ * Project: GeoChat
+ * Module: app
+ * Last Modified: 21/05/18 10:51 <martin>
+ * Last Compilation: 21/05/18 10:51
+ *
  * Copyright (c) 2018. Martin David Shaw. All rights reserved.
  */
 
@@ -10,10 +18,6 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-
-/**
- * Created by Martin Shaw on 21/05/2018 09:03 for GeoChat.
- */
 
 public class SplashscreenActivity extends AppCompatActivity {
 

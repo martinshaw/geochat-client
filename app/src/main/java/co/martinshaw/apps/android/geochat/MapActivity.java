@@ -1,4 +1,12 @@
 /*
+ * MapActivity
+ * C:/Users/martin/Android_Projects/GeoChat/app/src/main/java/co/martinshaw/apps/android/geochat/MapActivity.java
+ *
+ * Project: GeoChat
+ * Module: app
+ * Last Modified: 21/05/18 10:51 <martin>
+ * Last Compilation: 21/05/18 10:51
+ *
  * Copyright (c) 2018. Martin David Shaw. All rights reserved.
  */
 
@@ -40,10 +48,6 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-
-/**
- * Created by Martin Shaw on 21/05/2018 09:03 for GeoChat 09:15 for GeoChat.
- */
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 

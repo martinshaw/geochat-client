@@ -64,6 +64,9 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
+        <service android:name=".GeolocationService"
+            />
+
     </application>
 
 </manifest>

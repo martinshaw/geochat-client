@@ -1,4 +1,12 @@
 /*
+ * RegistWelcomeinfoFragment3
+ * C:/Users/martin/Android_Projects/GeoChat/app/src/main/java/co/martinshaw/apps/android/geochat/RegistWelcomeinfoFragment3.java
+ *
+ * Project: GeoChat
+ * Module: app
+ * Last Modified: 21/05/18 10:51 <martin>
+ * Last Compilation: 21/05/18 10:51
+ *
  * Copyright (c) 2018. Martin David Shaw. All rights reserved.
  */
 
@@ -11,10 +19,6 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-/**
- * Created by Martin Shaw on 21/05/2018 09:03 for GeoChat.
- */
 
 public class RegistWelcomeinfoFragment3 extends android.support.v4.app.Fragment {
 

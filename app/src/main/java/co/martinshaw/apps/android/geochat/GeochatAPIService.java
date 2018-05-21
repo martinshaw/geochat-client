@@ -1,4 +1,12 @@
 /*
+ * GeochatAPIService
+ * C:/Users/martin/Android_Projects/GeoChat/app/src/main/java/co/martinshaw/apps/android/geochat/GeochatAPIService.java
+ *
+ * Project: GeoChat
+ * Module: app
+ * Last Modified: 21/05/18 10:51 <martin>
+ * Last Compilation: 21/05/18 10:51
+ *
  * Copyright (c) 2018. Martin David Shaw. All rights reserved.
  */
 
@@ -13,10 +21,6 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-
-/**
- * Created by Martin Shaw on 13/05/2018 09:13 for GeoChat.
- */
 
 public interface GeochatAPIService {
 //    @GET("users/{user}/repos")

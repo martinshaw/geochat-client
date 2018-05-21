@@ -1,0 +1,6 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="notice" value="&amp;#36;file.className&#10;&amp;#36;file.pathName&#10;&#10;Project: &amp;#36;project.name&#10;Module: &amp;#36;module.name&#10;Last Modified: &amp;#36;file.lastModified &lt;&amp;#36;username&gt;&#10;Last Compilation: &amp;#36;today&#10;&#10;Copyright (c) &amp;#36;today.year. Martin David Shaw. All rights reserved." />
+    <option name="myName" value="MDS (multi-line informative header)" />
+  </copyright>
+</component>

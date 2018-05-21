@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2018. Martin David Shaw. All rights reserved.
+ */
+
 package co.martinshaw.apps.android.geochat;
 
 import android.content.Context;
@@ -36,6 +40,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+/**
+ * Created by Martin Shaw on 21/05/2018 09:03 for GeoChat.
+ */
 
 public class RegistrationActivity extends AppCompatActivity implements
         RegistWelcomeinfoFragment1.OnFragmentInteractionListener,

@@ -1,7 +1,11 @@
+/*
+ * Copyright (c) 2018. Martin David Shaw. All rights reserved.
+ */
+
 package co.martinshaw.apps.android.geochat;
 
 /**
- * Created by martin on 14/05/2018.
+ * Created by Martin Shaw on 14/05/2018 09:15 for GeoChat.
  */
 
 public class Session {

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2018. Martin David Shaw. All rights reserved.
+ */
+
 package co.martinshaw.apps.android.geochat;
 
 import com.google.gson.annotations.Expose;
@@ -6,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by martin on 13/05/2018.
+ * Created by Martin Shaw on 13/05/2018 09:13 for GeoChat.
  */
 
 public class GeochatAPIResponse<T> {

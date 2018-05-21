@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2018. Martin David Shaw. All rights reserved.
+ */
+
 package co.martinshaw.apps.android.geochat;
 
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +10,10 @@ import android.view.View;
 
 import mehdi.sakout.aboutpage.AboutPage;
 import mehdi.sakout.aboutpage.Element;
+
+/**
+ * Created by Martin Shaw on 21/05/2018 09:03 for GeoChat.
+ */
 
 public class AboutActivity extends AppCompatActivity {
 

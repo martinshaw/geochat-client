@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2018. Martin David Shaw. All rights reserved.
+ */
+
 package co.martinshaw.apps.android.geochat;
 
 import android.content.Context;
@@ -6,6 +10,10 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+/**
+ * Created by Martin Shaw on 21/05/2018 09:03 for GeoChat.
+ */
 
 public class SplashscreenActivity extends AppCompatActivity {
 

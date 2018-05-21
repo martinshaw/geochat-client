@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2018. Martin David Shaw. All rights reserved.
+ */
+
 package co.martinshaw.apps.android.geochat;
 
 
@@ -11,7 +15,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
- * Created by martin on 13/05/2018.
+ * Created by Martin Shaw on 13/05/2018 09:13 for GeoChat.
  */
 
 public interface GeochatAPIService {

@@ -25,10 +25,19 @@
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <TextView
-            android:id="@+id/main_geooutput"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/main_geooutput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+        </ScrollView>
+
 
 
         <!--<it.neokree.materialtabs.MaterialTabHost-->

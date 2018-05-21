@@ -130,11 +130,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void setCurrentLocation(Location location) {
-        this.currentLocation.setLatitude(location.getLatitude());
-        this.currentLocation.setLongitude(location.getLongitude());
 
-    }
+
+
+
+
+
+
+
+
+
 
     public void authoriseGeolocationFunctionality() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -148,65 +153,70 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
     public void setupGeolocationFunctionality() {
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        geolocationOutput = findViewById(R.id.main_geooutput);
-
-        geolocationOutput.append("\n\n\n\n\n\n\n\n\n\n");
-
-        geolocationOutput.append("Location Providers: ");
-        dumpProviders();
-
-//        Criteria criteria = new Criteria();
-//        geolocationProvider = locationManager.getBestProvider(criteria, true);
-        geolocationProvider = LocationManager.NETWORK_PROVIDER;
-        geolocationOutput.append("\nBest Provider is: " + geolocationProvider);
-
-        geolocationOutput.append("\nLocations (starting with last known): ");
-        if (geolocationProvider != null) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                Toast.makeText(this, "Not enough permissions", Toast.LENGTH_SHORT).show();
-
-            } else {
-
-//                Location location = locationManager.getLastKnownLocation(geolocationProvider);
-
-                Location location;
-
-                if (locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER) != null) {location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);}
-                else if (locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) != null) {location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);}
-                else if (locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);}
-                else {location = null; }
-
-                dumpLocation(location);
-
-                // Change 'currentLocation' if not null
-                if (location != null) { currentLocation = location; }
-
-            }
-
-        }
-
-
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //
-//            Toast.makeText(this, "TRYING TO GET PERMISSIONS", Toast.LENGTH_SHORT).show();
+//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 //
-//            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, GEOLOCATION_PERMISSION_REQUEST);
+//        geolocationOutput = findViewById(R.id.main_geooutput);
 //
-//        } else {
+//        geolocationOutput.append("\n\n\n\n\n\n\n\n\n\n");
 //
-//            Toast.makeText(this, "FOUND PERMISSIONS, SETTING UP GEOLOCATION", Toast.LENGTH_SHORT).show();
+//        geolocationOutput.append("Location Providers: ");
+//        dumpProviders();
 //
-//            locationManager.requestLocationUpdates(geolocationProvider, geolocationTimeInterval, geolocationDistance, this);
+////        Criteria criteria = new Criteria();
+////        geolocationProvider = locationManager.getBestProvider(criteria, true);
+//        geolocationProvider = LocationManager.NETWORK_PROVIDER;
+//        geolocationOutput.append("\nBest Provider is: " + geolocationProvider);
 //
+//        geolocationOutput.append("\nLocations (starting with last known): ");
+//        if (geolocationProvider != null) {
+//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//                Toast.makeText(this, "Not enough permissions", Toast.LENGTH_SHORT).show();
+//
+//            } else {
+//
+////                Location location = locationManager.getLastKnownLocation(geolocationProvider);
+//
+//                Location location;
+//
+//                if (locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER) != null) {location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);}
+//                else if (locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) != null) {location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);}
+//                else if (locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);}
+//                else {location = null; }
+//
+//                dumpLocation(location);
+//
+//                // Change 'currentLocation' if not null
+//                if (location != null) { currentLocation = location; }
+//
+//            }
 //
 //        }
-
     }
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -237,12 +247,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
+
+
+
+
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main_toolbar, menu);
         return true;
     }
+
+
+
+
+
+
+
+
+
 
 
     @Override
@@ -262,6 +289,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return true;
     }
+
+
+
+
+
+
+
+
+
+
+
 
 
     @Override
@@ -310,6 +348,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return true;
     }
+
+
+
+
+
+
+
+
+
+
 
 
     @Override
@@ -418,6 +466,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
+
+
+
+
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -455,6 +511,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
+
+
+
+
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -463,11 +526,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (geolocationProvider != null) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "CANNOT RESUME GEOLOCATION LISTENING", Toast.LENGTH_SHORT).show();
-                return;
+            }else {
+
+                // SETUP REQUESTLOCATIONUPDATES
+
             }
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, geolocationTimeInterval, geolocationDistance, locationListenerGps);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, geolocationTimeInterval, geolocationDistance, locationListenerNetwork);
-            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, geolocationTimeInterval, geolocationDistance, locationListenerPassive);
         }
 
     }
@@ -482,9 +545,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onPause() {
         super.onPause();
 
-        locationManager.removeUpdates(locationListenerGps);
-        locationManager.removeUpdates(locationListenerNetwork);
-        locationManager.removeUpdates(locationListenerPassive);
+        // SETUP REMOVEUPDATES
 
     }
 
@@ -499,38 +560,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     // Geolocation methods inherited from 'LocationListener' interface
-    LocationListener locationListenerGps = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            geolocationOutput.append("\nFOUND GPS LOCATION");
-            dumpLocation(location);
-            currentLocation = location;
-        }
-        public void onProviderDisabled(String provider) {}
-        public void onProviderEnabled(String provider) {}
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-    };
-
-    LocationListener locationListenerNetwork = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            geolocationOutput.append("\nFOUND NETWORK LOCATION");
-            dumpLocation(location);
-            currentLocation = location;
-        }
-        public void onProviderDisabled(String provider) {}
-        public void onProviderEnabled(String provider) {}
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-    };
-
-    LocationListener locationListenerPassive = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            geolocationOutput.append("\nFOUND PASSIVE LOCATION");
-            dumpLocation(location);
-            currentLocation = location;
-        }
-        public void onProviderDisabled(String provider) {}
-        public void onProviderEnabled(String provider) {}
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-    };
 
     private void dumpProviders() {
         List<String> providers = locationManager.getAllProviders();

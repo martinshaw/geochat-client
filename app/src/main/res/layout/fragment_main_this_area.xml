@@ -40,14 +40,14 @@
                 android:id="@+id/main_this_area_mapbutton_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="21 24,21.2N 10 10,3.44E (1 Mile Radius)"
+                android:text="Location Address Description"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/main_this_area_mapbutton_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="La Sagrada Familla, Barcelona, Spain" />
+                android:text="Location Lat &amp; Long" />
 
 
         </LinearLayout>

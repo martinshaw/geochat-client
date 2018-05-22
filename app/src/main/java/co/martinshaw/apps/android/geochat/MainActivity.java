@@ -60,7 +60,7 @@ import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MaterialTabListener, MainThisAreaFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MaterialTabListener, MainThisAreaFragment.OnFragmentInteractionListener, MainThisAreaFragment.OnReceiveDataFromFragmentListener {
 
     Toolbar vToolbar;
 
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SharedPreferences prefs;
 
     LocationManager locationManager;
-    Location currentLocation;
+    public Location currentLocation;
     int geolocationTimeInterval = 1000;
     int geolocationDistance = 0;
     String geolocationProvider;
@@ -130,8 +130,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        // Setup Material Tabs
-        setupMaterialTabs();
 
 
         // Floating Action Button onClick Event
@@ -140,10 +138,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new View.OnClickListener() {
                     public void onClick(View v) {
 
-                        Intent intent = new Intent(self, MapActivity.class);
-                        intent.putExtra("CURRENT_LOCATION_LAT", currentLocation.getLatitude());
-                        intent.putExtra("CURRENT_LOCATION_LONG", currentLocation.getLongitude());
-                        startActivity(intent);
+//                        Intent intent = new Intent(self, MapActivity.class);
+//                        intent.putExtra("CURRENT_LOCATION_LAT", currentLocation.getLatitude());
+//                        intent.putExtra("CURRENT_LOCATION_LONG", currentLocation.getLongitude());
+//                        startActivity(intent);
 
                     }
                 }
@@ -151,9 +149,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         // Set default "current" location for before detection of actual location
+        // Use Yanlong Zhang's office as default location until sufficient GeoLoc is implemented
         currentLocation = new Location("");
-        currentLocation.setLatitude(53.480953);     // Use Manchester Piccadilly Gardens as default location
-        currentLocation.setLongitude(-2.236873);
+        currentLocation.setLatitude(53.471756);
+        currentLocation.setLongitude(-2.238803);
+
+
+        // Setup Material Tabs
+        setupMaterialTabs();
 
 
         authoriseGeolocationFunctionality();
@@ -192,6 +195,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tabHost.addTab( tabHost.newTab().setText(pagerAdapter.getPageTitle(i)).setTabListener(this) );
         };
 
+
+    }
+
+
+
+
+
+
+
+
+
+    public void openMapView() {
+
+        Intent intent = new Intent(this, MapActivity.class);
+        intent.putExtra("CURRENT_LOCATION_LAT", currentLocation.getLatitude());
+        intent.putExtra("CURRENT_LOCATION_LONG", currentLocation.getLongitude());
+        startActivity(intent);
 
     }
 
@@ -601,8 +621,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    // fragment sending data to activity
+    // fragment -> activity
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    public void onReceiveDataFromFragment(String action, Object data) {
+
+        switch (action){
+
+            case "openMapView":
+                openMapView();
+                break;
+
+            default:
+                break;
+
+        }
 
     }
 

@@ -30,36 +30,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.stfalcon.chatkit.commons.ImageLoader;
-import com.stfalcon.chatkit.dialogs.DialogsList;
-import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
-import com.stfalcon.chatkit.messages.MessageInput;
-import com.stfalcon.chatkit.messages.MessagesList;
-import com.stfalcon.chatkit.messages.MessagesListAdapter;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import co.martinshaw.apps.android.geochat.ChatKit.DefaultDialog;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainThisAreaFragment extends android.support.v4.app.Fragment {
@@ -68,6 +54,9 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
 
 //    private String mParam1;
 //    private String mParam2;
+
+    Retrofit retrofit;
+    GeochatAPIService service;
 
     private OnFragmentInteractionListener mListener;
     private OnReceiveDataFromFragmentListener mActivityListener;
@@ -86,7 +75,6 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
     public LinearLayout mMapButton;
     public TextView mMapButtonTitle;
     public TextView mMapButtonSubtitle;
-    public DialogsList mDialogsList;
 
 
 
@@ -133,6 +121,13 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
         mainActivity = (MainActivity) getActivity();
 
 
+        retrofit = new Retrofit.Builder()
+                .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001"))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        service = retrofit.create(GeochatAPIService.class);
+
+
         // Get location from SharedPreferences
         currentLocation = getCurrentLocation();
 
@@ -153,52 +148,44 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
         }
 
 
-        // Setup ChatKit DialogsList
+        // Setup MessageList
+//        setupMessageListView();
 
-        ArrayList<DefaultDialog> testDialogs = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DAY_OF_MONTH, -(i * i));
-            calendar.add(Calendar.MINUTE, -(i * i));
-
-            testDialogs.add(getDialog(i, calendar.getTime()));
-        }
-
-        mDialogsList = rootView.findViewById(R.id.main_this_area_dialogslist);
-        DialogsListAdapter dialogsListAdapter = new DialogsListAdapter<>(new ImageLoader() {
-            @Override
-            public void loadImage(ImageView imageView, String url) {
-                Picasso.with(getActivity()).load(url).into(imageView);
-            }
-        });
-        mDialogsList.setAdapter(dialogsListAdapter);
 
 
         return rootView;
     }
 
-    private static DefaultDialog getDialog(int i, Date lastMessageCreatedAt) {
-        ArrayList<User> users = getUsers();
-        return new DefaultDialog(
-            i,
-            users.get(0).getName(),
-            users.size() > 1 ? groupChatImages.get(users.size() - 2) : getRandomAvatar(),
-            users,
-            getMessage(lastMessageCreatedAt),
-            i < 3 ? 3 - i : 0);
-    }
 
-    private static ArrayList<User> getUsers() {
-        ArrayList<co.martinshaw.apps.android.geochat.ChatKit.User> users = new ArrayList<>();
-//        int usersCount = 1 + rnd.nextInt(4);
 
-//        for (int i = 0; i < usersCount; i++) {
-//            users.add(getUser());
-//        }
-        users.add(new User(0, "Martin Shaw", null, true));
 
-        return users;
-    }
+
+//
+//    public void setupMessageListView(){
+//        List<Message> messages;
+//        ListView mMessageList = rootView.findViewById(R.id.main_this_area_messagelist);
+//
+//        retrofit2.Call<GeochatAPIResponse<List<Message>>> messagesReq = service.getAllMessages(prefs.getString("sessionKey", ""));
+//        messagesReq.enqueue(new retrofit2.Callback<GeochatAPIResponse<List<Message>>>() {
+//            @Override
+//            public void onResponse(retrofit2.Call<GeochatAPIResponse<List<Message>>> call, retrofit2.Response<GeochatAPIResponse<List<Message>>> response) {
+//                if (response.body().getErrorMsg() != null) {
+////                    Toast.makeText(getApplicationContext(), response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
+//                } else {
+//
+//                    Log.e("FMEOEMF", response.body())
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(retrofit2.Call<GeochatAPIResponse<List<Message>>> call, Throwable t) {
+//                Log.i("Failure", t.toString());
+////                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//    }
 
 
 

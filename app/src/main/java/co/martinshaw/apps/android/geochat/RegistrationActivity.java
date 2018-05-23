@@ -80,8 +80,8 @@ public class RegistrationActivity extends AppCompatActivity implements
     Retrofit retrofit;
     GeochatAPIService service;
 
-//    Button mAPIURLSettingDialog;
-    ImageView mAPIURLSettingDialog;
+    Button mAPIURLSettingDialog;
+//    ImageView mAPIURLSettingDialog;
 
 
     @Override
@@ -109,8 +109,8 @@ public class RegistrationActivity extends AppCompatActivity implements
         mPager.setAdapter(mPagerAdapter);
 
         // Setup API URL setting dialog
-//        mAPIURLSettingDialog = (Button) findViewById(R.id.regist_bottomsheet_setting_button);
-        mAPIURLSettingDialog = (ImageView) findViewById(R.id.regist_welcomeinfo_1_logo);
+        mAPIURLSettingDialog = (Button) findViewById(R.id.regist_bottomsheet_setting_button);
+//        mAPIURLSettingDialog = (ImageView) findViewById(R.id.regist_welcomeinfo_1_logo);
         mAPIURLSettingDialog.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {

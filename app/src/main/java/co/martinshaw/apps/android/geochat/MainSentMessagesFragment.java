@@ -1,6 +1,6 @@
 /*
- * RegistWelcomeinfoFragment3
- * C:/Users/martin/Android_Projects/GeoChat/app/src/main/java/co/martinshaw/apps/android/geochat/RegistWelcomeinfoFragment3.java
+ * MainSentMessagesFragment
+ * C:/Users/martin/Android_Projects/GeoChat/app/src/main/java/co/martinshaw/apps/android/geochat/MainSentMessagesFragment.java
  *
  * Project: GeoChat
  * Module: app
@@ -20,29 +20,55 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class RegistWelcomeinfoFragment3 extends android.support.v4.app.Fragment {
+
+import android.content.Context;
+import android.net.Uri;
+import android.os.Bundle;
+import android.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+
+public class MainSentMessagesFragment extends android.support.v4.app.Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public RegistWelcomeinfoFragment3() { }
+    View rootView;
 
-    // TODO: Rename and change types and number of parameters
-    public static RegistWelcomeinfoFragment3 newInstance() {
-        RegistWelcomeinfoFragment3 fragment = new RegistWelcomeinfoFragment3();
-        Bundle args = new Bundle();
+
+
+
+
+
+    public MainSentMessagesFragment() {
+        // Required empty public constructor
+    }
+
+
+    public static android.support.v4.app.Fragment newInstance() {
+        android.support.v4.app.Fragment fragment = new MainSentMessagesFragment();
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
+
+
+
+
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_regist_welcomeinfo_3, container, false);
+        rootView = inflater.inflate(R.layout.fragment_main_sent_messages, container, false);
+
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

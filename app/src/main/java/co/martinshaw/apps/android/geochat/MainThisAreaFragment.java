@@ -4,8 +4,8 @@
  *
  * Project: GeoChat
  * Module: app
- * Last Modified: 21/05/18 15:03 <martin>
- * Last Compilation: 21/05/18 15:03
+ * Last Modified: 23/05/18 06:23 <martin>
+ * Last Compilation: 23/05/18 06:23
  *
  * Copyright (c) 2018. Martin David Shaw. All rights reserved.
  */
@@ -115,6 +115,8 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
         prefs = this.getActivity().getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
 
         mMapButton = rootView.findViewById(R.id.main_this_area_mapbutton);
+        mMapButtonTitle = rootView.findViewById(R.id.main_this_area_mapbutton_title);
+        mMapButtonSubtitle = rootView.findViewById(R.id.main_this_area_mapbutton_subtitle);
         mainActivity = (MainActivity) getActivity();
 
 
@@ -240,6 +242,7 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
                             @Override
                             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                 mMapButton.setBackground(new BitmapDrawable(getActivity().getResources(), bitmap));
+                                mMapButton.getBackground().setAlpha(120);
                             }
 
                             @Override
@@ -322,7 +325,7 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
 
 
 
-        mMapButtonTitle.setText("");
+        mMapButtonTitle.setText("MMU All Saints, Oxford Street, Manchester UK");
         mMapButtonSubtitle.setText("53.471756, -2.238803 (10 metre)");
 
 

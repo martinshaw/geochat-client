@@ -4,8 +4,8 @@
  *
  * Project: GeoChat
  * Module: app
- * Last Modified: 21/05/18 10:51 <martin>
- * Last Compilation: 21/05/18 10:51
+ * Last Modified: 23/05/18 06:23 <martin>
+ * Last Compilation: 23/05/18 06:23
  *
  * Copyright (c) 2018. Martin David Shaw. All rights reserved.
  */
@@ -60,7 +60,12 @@ import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MaterialTabListener, MainThisAreaFragment.OnFragmentInteractionListener, MainThisAreaFragment.OnReceiveDataFromFragmentListener {
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
+        MaterialTabListener, MainThisAreaFragment.OnFragmentInteractionListener,
+        MainThisAreaFragment.OnReceiveDataFromFragmentListener,
+        MainSentMessagesFragment.OnFragmentInteractionListener,
+        MainExploreFragment.OnFragmentInteractionListener {
 
     Toolbar vToolbar;
 
@@ -679,8 +684,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public Fragment getItem(int num) {
             switch (num) {
                 case 0: return MainThisAreaFragment.newInstance();
-                case 1: return MainThisAreaFragment.newInstance();
-                case 2: return MainThisAreaFragment.newInstance();
+                case 1: return MainSentMessagesFragment.newInstance();
+                case 2: return MainExploreFragment.newInstance();
                 default: return new Fragment();
             }
         }

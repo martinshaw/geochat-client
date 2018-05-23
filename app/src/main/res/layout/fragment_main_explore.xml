@@ -1,0 +1,27 @@
+<!--
+  ~ fragment_main_explore.xml
+  ~ C:/Users/martin/Android_Projects/GeoChat/app/src/main/res/layout/fragment_main_explore.xml
+  ~
+  ~ Project: GeoChat
+  ~ Module: app
+  ~ Last Modified: 23/05/18 06:11 <martin>
+  ~ Last Compilation: 23/05/18 06:11
+  ~
+  ~ Copyright (c) 2018. Martin David Shaw. All rights reserved.
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="co.martinshaw.apps.android.geochat.MainExploreFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="The 'Explore' feature is coming soon..."
+        android:textSize="18sp" />
+
+</FrameLayout>

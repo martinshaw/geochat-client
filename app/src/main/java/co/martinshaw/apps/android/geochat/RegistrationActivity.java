@@ -91,6 +91,11 @@ public class RegistrationActivity extends AppCompatActivity implements
         /*
         *  MOVE API SETUP CODE FROM API URL DIALOG EVENT TO HERE IN PRODUCTION
         * */
+        retrofit = new Retrofit.Builder()
+                .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001"))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        service = retrofit.create(GeochatAPIService.class);
 
         // Setup and configure bottom sheet for user registration
         setupRegistrationBottomSheet(this);
@@ -198,16 +203,7 @@ public class RegistrationActivity extends AppCompatActivity implements
 
     public void createUserAccountAndProceed(){
 
-        // Dummy: Remember user is signed in
-        prefs.edit().putBoolean("isSignedIn", true).apply();
-
-        // Dummy: Attempt REST Function
-        Toast.makeText(getApplicationContext(), "Creating user...", Toast.LENGTH_LONG).show();
-
-        // Dummy: Move screen to MainActivity
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        Toast.makeText(getApplicationContext(), "Creating a GeoChat account from this app is not yet available!", Toast.LENGTH_LONG).show();
 
     }
 
@@ -222,6 +218,7 @@ public class RegistrationActivity extends AppCompatActivity implements
 
         } else {
 
+            // Show Sign-in dialog
 
             // Check form inputs validated
             MaterialEditText mEmailAddressTextBox = (MaterialEditText) findViewById(R.id.regist_bottomsheet_form_email);
@@ -246,6 +243,11 @@ public class RegistrationActivity extends AppCompatActivity implements
                         if (usersession.session.session_key != null) {
                             prefs.edit().putString("sessionKey", usersession.session.session_key).apply();
                             Toast.makeText(RegistrationActivity.this, "Welcome " + usersession.user.first_name + "!", Toast.LENGTH_SHORT).show();
+
+                            // Dummy: Move screen to MainActivity
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            finish();
                         }
 
                     }

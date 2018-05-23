@@ -32,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,7 +80,8 @@ public class RegistrationActivity extends AppCompatActivity implements
     Retrofit retrofit;
     GeochatAPIService service;
 
-    Button mAPIURLSettingDialog;
+//    Button mAPIURLSettingDialog;
+    ImageView mAPIURLSettingDialog;
 
 
     @Override
@@ -107,7 +109,8 @@ public class RegistrationActivity extends AppCompatActivity implements
         mPager.setAdapter(mPagerAdapter);
 
         // Setup API URL setting dialog
-        mAPIURLSettingDialog = (Button) findViewById(R.id.regist_bottomsheet_setting_button);
+//        mAPIURLSettingDialog = (Button) findViewById(R.id.regist_bottomsheet_setting_button);
+        mAPIURLSettingDialog = (ImageView) findViewById(R.id.regist_welcomeinfo_1_logo);
         mAPIURLSettingDialog.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {

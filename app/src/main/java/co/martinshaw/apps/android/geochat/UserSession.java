@@ -16,5 +16,4 @@ public class UserSession {
 
     public User user;
     public Session session;
-
 }

@@ -31,6 +31,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -87,6 +88,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         this.initialLocation = new Location("");
         this.initialLocation.setLatitude(getIntent().getDoubleExtra("CURRENT_LOCATION_LAT", new Double(0)));
         this.initialLocation.setLongitude(getIntent().getDoubleExtra("CURRENT_LOCATION_LONG", new Double(0)));
+
+        Button mapCloseButton = findViewById(R.id.map_button_close);
+        mapCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 

@@ -19,4 +19,6 @@ class User {
     public String last_name;
     public String email_address;
 
+    public User(int i, String s, Object o, boolean b) {
+    }
 }

@@ -26,12 +26,10 @@
     <string name="map_hint">Use the zoom buttons below to select the radius around your current location…</string>
 
     <string name="drawer_section_actions">User Actions</string>
+    <string name="drawer_item_settings">App Settings</string>
     <string name="drawer_item_signout">Sign out from GeoChat…</string>
     <string name="drawer_section_about">About the app</string>
     <string name="drawer_item_feedback">Give Feedback</string>
     <string name="drawer_item_about">About GeoChat</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

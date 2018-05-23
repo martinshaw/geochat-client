@@ -59,6 +59,11 @@ import java.util.List;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -68,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements
         MainExploreFragment.OnFragmentInteractionListener {
 
     Toolbar vToolbar;
+    ActionBarDrawerToggle mDrawerToggle;
+    NavigationView vDrawerNavView;
 
     MaterialTabHost tabHost;
     ViewPager pager;
@@ -75,6 +82,11 @@ public class MainActivity extends AppCompatActivity implements
 
     DrawerLayout vDrawerLayout;
     SharedPreferences prefs;
+
+    Retrofit retrofit;
+    GeochatAPIService service;
+
+    User user;
 
     LocationManager locationManager;
     int geolocationTimeInterval = 1000;
@@ -92,12 +104,21 @@ public class MainActivity extends AppCompatActivity implements
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        prefs = this.getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
+        this.prefs = this.getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
+
+
+        // Setup and configure Retrofit
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001"))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        service = retrofit.create(GeochatAPIService.class);
 
 
         // Drawer Panel Setup & onClick Events
         vDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawerlayout);
-        NavigationView vDrawerNavView = (NavigationView) findViewById(R.id.main_drawer);
+        vDrawerNavView = (NavigationView) findViewById(R.id.main_drawer);
         vDrawerNavView.setNavigationItemSelectedListener(this);
 
 
@@ -109,14 +130,8 @@ public class MainActivity extends AppCompatActivity implements
         animationDrawable.start();
 
 
-        // Drawer Panel Dynamically Change Title
-        TextView vDrawerTitle = (TextView) vDrawerNavView.getHeaderView(0).findViewById(R.id.main_drawer_header_title);
-        vDrawerTitle.setText("Martin Shaw");
-
-
         // Setup Action Bar (Toolbar)
         vToolbar = findViewById(R.id.main_toolbar);
-        ActionBarDrawerToggle mDrawerToggle;
         final ActionBar actionBar = getSupportActionBar();
 
         setSupportActionBar(vToolbar);
@@ -150,6 +165,30 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
         );
+
+
+        // Get and store user data
+        Call<GeochatAPIResponse<User>> userRequest = service.getUserBySessionKey(prefs.getString("sessionKey", ""), prefs.getString("sessionKey", ""));
+        userRequest.enqueue(new Callback<GeochatAPIResponse<User>>() {
+            @Override
+            public void onResponse(Call<GeochatAPIResponse<User>> call, Response<GeochatAPIResponse<User>> response) {
+                if (response.body().getErrorMsg() != null) {
+                    Toast.makeText(getApplicationContext(), response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
+                } else {
+
+                    user = response.body().getData();
+
+                    insertUserSpecificLabels();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GeochatAPIResponse<User>> call, Throwable t) {
+                Log.i("Failure", t.toString());
+                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         // Set default "current" location for before detection of actual location
@@ -192,6 +231,20 @@ public class MainActivity extends AppCompatActivity implements
     }
     public double getCurrentRadius() {
         return Double.longBitsToDouble(prefs.getLong("locationRadius", 0));
+    }
+
+
+
+
+
+
+
+    public void insertUserSpecificLabels (){
+
+        // Drawer Panel Dynamically Change Title
+        TextView vDrawerTitle = (TextView) vDrawerNavView.getHeaderView(0).findViewById(R.id.main_drawer_header_title);
+        vDrawerTitle.setText(user.first_name + " " + user.last_name);
+
     }
 
 
@@ -245,7 +298,6 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(intent);
 
     }
-
 
 
 
@@ -452,14 +504,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
-
-            case R.id.main_drawer_nav_item_1: {
-
-                Toast.makeText(this, "Drawer Menu Item #1 was clicked!", Toast.LENGTH_SHORT).show();
-
-                break;
-
-            }
+            
             case R.id.main_drawer_nav_item_signout: {
 
                 Toast.makeText(this, "Signing out ...", Toast.LENGTH_SHORT).show();
@@ -545,6 +590,11 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             }
+            
+            default:
+
+                Toast.makeText(this, "This feature is coming soon!", Toast.LENGTH_SHORT).show();
+                break;
 
         }
 
@@ -609,7 +659,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(this, "Resuming Geolocation", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Resuming Geolocation", Toast.LENGTH_SHORT).show();
 
 
     }

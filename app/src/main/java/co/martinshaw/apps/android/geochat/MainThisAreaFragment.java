@@ -28,19 +28,31 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.stfalcon.chatkit.commons.ImageLoader;
+import com.stfalcon.chatkit.dialogs.DialogsList;
+import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
+import com.stfalcon.chatkit.messages.MessageInput;
+import com.stfalcon.chatkit.messages.MessagesList;
+import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
+import co.martinshaw.apps.android.geochat.ChatKit.DefaultDialog;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -74,6 +86,7 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
     public LinearLayout mMapButton;
     public TextView mMapButtonTitle;
     public TextView mMapButtonSubtitle;
+    public DialogsList mDialogsList;
 
 
 
@@ -140,10 +153,52 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
         }
 
 
+        // Setup ChatKit DialogsList
+
+        ArrayList<DefaultDialog> testDialogs = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DAY_OF_MONTH, -(i * i));
+            calendar.add(Calendar.MINUTE, -(i * i));
+
+            testDialogs.add(getDialog(i, calendar.getTime()));
+        }
+
+        mDialogsList = rootView.findViewById(R.id.main_this_area_dialogslist);
+        DialogsListAdapter dialogsListAdapter = new DialogsListAdapter<>(new ImageLoader() {
+            @Override
+            public void loadImage(ImageView imageView, String url) {
+                Picasso.with(getActivity()).load(url).into(imageView);
+            }
+        });
+        mDialogsList.setAdapter(dialogsListAdapter);
+
+
         return rootView;
     }
 
+    private static DefaultDialog getDialog(int i, Date lastMessageCreatedAt) {
+        ArrayList<User> users = getUsers();
+        return new DefaultDialog(
+            i,
+            users.get(0).getName(),
+            users.size() > 1 ? groupChatImages.get(users.size() - 2) : getRandomAvatar(),
+            users,
+            getMessage(lastMessageCreatedAt),
+            i < 3 ? 3 - i : 0);
+    }
 
+    private static ArrayList<User> getUsers() {
+        ArrayList<co.martinshaw.apps.android.geochat.ChatKit.User> users = new ArrayList<>();
+//        int usersCount = 1 + rnd.nextInt(4);
+
+//        for (int i = 0; i < usersCount; i++) {
+//            users.add(getUser());
+//        }
+        users.add(new User(0, "Martin Shaw", null, true));
+
+        return users;
+    }
 
 
 
@@ -392,6 +447,12 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
         mActivityListener = null;
     }
 
+
+
+
+
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -412,5 +473,9 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
     public interface OnReceiveDataFromFragmentListener {
         void onReceiveDataFromFragment(String action, Object data);
     }
+
+
+
+
 
 }

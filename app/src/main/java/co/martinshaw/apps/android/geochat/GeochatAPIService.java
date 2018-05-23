@@ -32,6 +32,9 @@ public interface GeochatAPIService {
     @GET("api/v0.1/users")
     Call<GeochatAPIResponse<List<User>>> getAllUsers(@Header("Geochat-Session-Key") String session_key);
 
+    @GET("api/v0.1/users/{key}")
+    Call<GeochatAPIResponse<User>> getUserBySessionKey(@Header("Geochat-Session-Key") String session_key, @Path("key") String session_key_param);
+
     @GET("api/v0.1/auth/signin")
     Call<GeochatAPIResponse<UserSession>> signInUserAccount(@Query("email_address") String email_address, @Query("password") String password);
 }

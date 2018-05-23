@@ -109,14 +109,14 @@
             android:elevation="1dp" />
 
 
-        <Button
-            android:id="@+id/regist_bottomsheet_setting_button"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/hind"
-            android:text="API URL Setting"
-            android:backgroundTint="@color/md_grey_100" />
+        <!--<Button-->
+            <!--android:id="@+id/regist_bottomsheet_setting_button"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:fontFamily="@font/hind"-->
+            <!--android:text="API URL Setting"-->
+            <!--android:backgroundTint="@color/md_grey_100" />-->
 
 
     </LinearLayout>

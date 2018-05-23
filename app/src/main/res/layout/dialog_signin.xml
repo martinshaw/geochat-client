@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+dialog_signin.xml.xml
+  ~ C:/Users/martin/Android_Projects/GeoChat/app/src/main/res/laydialog_signin.xml.xml
+  ~
+  ~ Project: GeoChat
+  ~ Module: app
+  ~ Last Modified: 23/05/18 06:45 <martin>
+  ~ Last Compilation: 23/05/18 06:45
+  ~
+  ~ Copyright (c) 2018. Martin David Shaw. All rights reserved.
+  -->
+
+<LinearLayout xmlns:android='http://schemas.android.com/apk/res/android'
+    android:layout_width='fill_parent'
+    android:layout_height='fill_parent'
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation='vertical'
+    android:padding='10sp'>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id='@+id/signin_email'
+        android:inputType="textEmailAddress"
+        android:layout_width='fill_parent'
+        android:layout_height='wrap_content'
+        android:hint='E-mail address'
+        android:singleLine='true'
+        app:met_floatingLabel="normal"
+        app:met_primaryColor="@color/geochatAccent"
+        android:theme="@style/RegistrationTextField"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp">
+
+        <requestFocus />
+    </com.rengwuxian.materialedittext.MaterialEditText>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id='@+id/signin_password'
+        android:layout_width='match_parent'
+        android:layout_height='wrap_content'
+        android:hint='Password'
+        android:ems='10'
+        android:inputType='textPassword'
+        app:met_floatingLabel="normal"
+        app:met_primaryColor="@color/geochatAccent"
+        android:theme="@style/RegistrationTextField"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp">
+    </com.rengwuxian.materialedittext.MaterialEditText>
+
+</LinearLayout>

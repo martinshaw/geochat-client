@@ -242,7 +242,7 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
                             @Override
                             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                 mMapButton.setBackground(new BitmapDrawable(getActivity().getResources(), bitmap));
-                                mMapButton.getBackground().setAlpha(120);
+                                mMapButton.getBackground().setAlpha(160);
                             }
 
                             @Override

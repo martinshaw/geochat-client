@@ -28,6 +28,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -219,46 +220,75 @@ public class RegistrationActivity extends AppCompatActivity implements
         } else {
 
             // Show Sign-in dialog
+            LayoutInflater li = LayoutInflater.from(this);
+            View prompt = li.inflate(R.layout.dialog_signin, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setView(prompt);
+            final EditText _email = (EditText) prompt.findViewById(R.id.signin_email);
+            final EditText _pass = (EditText) prompt.findViewById(R.id.signin_password);
+            alertDialogBuilder.setTitle("Sign in with existing account...");
+            alertDialogBuilder.setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id)
+                        {
 
-            // Check form inputs validated
-            MaterialEditText mEmailAddressTextBox = (MaterialEditText) findViewById(R.id.regist_bottomsheet_form_email);
-            MaterialEditText mPasswordTextBox = (MaterialEditText) findViewById(R.id.regist_bottomsheet_form_password);
-            String inputed_email_address = (String) mEmailAddressTextBox.getText().toString();
-            String inputed_password = (String) mPasswordTextBox.getText().toString();
+                            // Attempt to communicate with API Service. Using Sign In function to receive Session Key
+                            // onFailure will be triggered if no .data object is received (in case of !200 response), just in case, check for !200 .status code in onResponse function too
+                            Call<GeochatAPIResponse<UserSession>> signInRequest = service.signInUserAccount(_email.getText().toString(), _pass.getText().toString());
+                            signInRequest.enqueue(new Callback<GeochatAPIResponse<UserSession>>() {
+                                @Override
+                                public void onResponse(Call<GeochatAPIResponse<UserSession>> call, Response<GeochatAPIResponse<UserSession>> response) {
+                                    if (response.body().getErrorMsg() != null) {
+                                        Toast.makeText(RegistrationActivity.this, response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        UserSession usersession = response.body().getData();
+                                        Log.i("GEOCHAT_INFO_API", "Geochat API Session Key received: " + usersession.session.session_key);
+                                        Log.i("GEOCHAT_INFO_API", "Geochat API User signed in: " + usersession.user.first_name + " " + usersession.user.last_name + "  id: " + usersession.user.id);
 
+                                        if (usersession.session.session_key != null) {
+                                            prefs.edit().putBoolean("isSignedIn", true).apply();
+                                            prefs.edit().putString("sessionKey", usersession.session.session_key).apply();
+                                            Toast.makeText(RegistrationActivity.this, "Welcome " + usersession.user.first_name + "!", Toast.LENGTH_SHORT).show();
 
-            // Attempt to communicate with API Service. Using Sign In function to receive Session Key
-            // onFailure will be triggered if no .data object is received (in case of !200 response), just in case, check for !200 .status code in onResponse function too
-            Call<GeochatAPIResponse<UserSession>> signInRequest = service.signInUserAccount(inputed_email_address, inputed_password);
-            signInRequest.enqueue(new Callback<GeochatAPIResponse<UserSession>>() {
-                @Override
-                public void onResponse(Call<GeochatAPIResponse<UserSession>> call, Response<GeochatAPIResponse<UserSession>> response) {
-                    if (response.body().getErrorMsg() != null) {
-                        Toast.makeText(RegistrationActivity.this, response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        UserSession usersession = response.body().getData();
-                        Log.i("GEOCHAT_INFO_API", "Geochat API Session Key received: " + usersession.session.session_key);
-                        Log.i("GEOCHAT_INFO_API", "Geochat API User signed in: " + usersession.user.first_name + " " + usersession.user.last_name + "  id: " + usersession.user.id);
+                                            // Dummy: Move screen to MainActivity
+                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
 
-                        if (usersession.session.session_key != null) {
-                            prefs.edit().putString("sessionKey", usersession.session.session_key).apply();
-                            Toast.makeText(RegistrationActivity.this, "Welcome " + usersession.user.first_name + "!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
 
-                            // Dummy: Move screen to MainActivity
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                                @Override
+                                public void onFailure(Call<GeochatAPIResponse<UserSession>> call, Throwable t) {
+                                    Log.i("Failure", t.toString());
+                                    Toast.makeText(RegistrationActivity.this, R.string.error_signin, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
                         }
+                    });
 
-                    }
-                }
-
+            alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
-                public void onFailure(Call<GeochatAPIResponse<UserSession>> call, Throwable t) {
-                    Log.i("Failure", t.toString());
-                    Toast.makeText(RegistrationActivity.this, R.string.error_signin, Toast.LENGTH_SHORT).show();
+                public void onClick(DialogInterface dialog, int id)
+                {
+                    dialog.cancel();
+
                 }
             });
+
+            alertDialogBuilder.show();
+
+
+            // Check form inputs validated
+//            MaterialEditText mEmailAddressTextBox = (MaterialEditText) findViewById(R.id.regist_bottomsheet_form_email);
+//            MaterialEditText mPasswordTextBox = (MaterialEditText) findViewById(R.id.regist_bottomsheet_form_password);
+//            String inputed_email_address = (String) mEmailAddressTextBox.getText().toString();
+//            String inputed_password = (String) mPasswordTextBox.getText().toString();
+
+
 
             
         }

@@ -55,6 +55,12 @@
         </LinearLayout>
 
 
+        <com.stfalcon.chatkit.dialogs.DialogsList
+            android:id="@+id/main_this_area_dialogslist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
     </LinearLayout>
 
 </FrameLayout>

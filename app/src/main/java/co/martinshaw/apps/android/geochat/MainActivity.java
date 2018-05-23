@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SharedPreferences prefs;
 
     LocationManager locationManager;
-    public Location currentLocation;
     int geolocationTimeInterval = 1000;
     int geolocationDistance = 0;
     String geolocationProvider;
@@ -150,9 +149,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Set default "current" location for before detection of actual location
         // Use Yanlong Zhang's office as default location until sufficient GeoLoc is implemented
-        currentLocation = new Location("");
-        currentLocation.setLatitude(53.471756);
-        currentLocation.setLongitude(-2.238803);
+        setCurrentLocation(53.471756, -2.238803);
 
 
         // Setup Material Tabs
@@ -162,6 +159,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         authoriseGeolocationFunctionality();
 
 
+    }
+
+
+
+
+
+
+
+    // Location getter/setters for storage in SharedPreferences instead of storage in variable
+    public void setCurrentLocation(double _lat, double _long){
+        prefs.edit().putLong("locationLat", Double.doubleToRawLongBits(_lat)).apply();
+        prefs.edit().putLong("locationLong", Double.doubleToRawLongBits(_long)).apply();
+    }
+    public void setCurrentLocation(Location _location){
+        prefs.edit().putLong("locationLat", Double.doubleToRawLongBits(_location.getLatitude())).apply();
+        prefs.edit().putLong("locationLong", Double.doubleToRawLongBits(_location.getLongitude())).apply();
+    }
+    public void setCurrentRadius(double _radius){
+        prefs.edit().putLong("locationRadius", Double.doubleToRawLongBits(_radius)).apply();
+    }
+    public Location getCurrentLocation() {
+        Location _loc = new Location("");
+        _loc.setLatitude(Double.longBitsToDouble(prefs.getLong("locationLat", 0)));
+        _loc.setLongitude(Double.longBitsToDouble(prefs.getLong("locationLong", 0)));
+        return _loc;
+    }
+    public double getCurrentRadius() {
+        return Double.longBitsToDouble(prefs.getLong("locationRadius", 0));
     }
 
 
@@ -208,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void openMapView() {
 
+        Location currentLocation = getCurrentLocation();
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra("CURRENT_LOCATION_LAT", currentLocation.getLatitude());
         intent.putExtra("CURRENT_LOCATION_LONG", currentLocation.getLongitude());

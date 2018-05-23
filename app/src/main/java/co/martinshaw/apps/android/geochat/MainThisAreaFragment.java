@@ -14,11 +14,13 @@ package co.martinshaw.apps.android.geochat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -57,6 +59,9 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
 
     private OnFragmentInteractionListener mListener;
     private OnReceiveDataFromFragmentListener mActivityListener;
+
+    private Location currentLocation;
+    public SharedPreferences prefs;
 
     public MainActivity mainActivity;
 
@@ -107,10 +112,14 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main_this_area, container, false);
+        prefs = this.getActivity().getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
 
         mMapButton = rootView.findViewById(R.id.main_this_area_mapbutton);
         mainActivity = (MainActivity) getActivity();
 
+
+        // Get location from SharedPreferences
+        currentLocation = getCurrentLocation();
 
 
         // Get and store Google API key
@@ -130,6 +139,36 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
 
 
         return rootView;
+    }
+
+
+
+
+
+
+
+
+
+    // Location getter/setters for storage in SharedPreferences instead of storage in variable
+    public void setCurrentLocation(double _lat, double _long){
+        prefs.edit().putLong("locationLat", Double.doubleToRawLongBits(_lat)).apply();
+        prefs.edit().putLong("locationLong", Double.doubleToRawLongBits(_long)).apply();
+    }
+    public void setCurrentLocation(Location _location){
+        prefs.edit().putLong("locationLat", Double.doubleToRawLongBits(_location.getLatitude())).apply();
+        prefs.edit().putLong("locationLong", Double.doubleToRawLongBits(_location.getLongitude())).apply();
+    }
+    public void setCurrentRadius(double _radius){
+        prefs.edit().putLong("locationRadius", Double.doubleToRawLongBits(_radius)).apply();
+    }
+    public Location getCurrentLocation() {
+        Location _loc = new Location("");
+        _loc.setLatitude(Double.longBitsToDouble(prefs.getLong("locationLat", 0)));
+        _loc.setLongitude(Double.longBitsToDouble(prefs.getLong("locationLong", 0)));
+        return _loc;
+    }
+    public double getCurrentRadius() {
+        return Double.longBitsToDouble(prefs.getLong("locationRadius", 0));
     }
 
 
@@ -175,12 +214,15 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
             @Override
             public void run() {
 
+                int _mapButton_width = mMapButton.getWidth();
+                int _mapButton_height = mMapButton.getHeight();
+
                 // Construct Google Map Static image request URL
                 String mapButtonStaticImageURL ="https://maps.googleapis.com/maps/api/staticmap" +
-                        "?center=Manchester" +
+                        "?center=" + currentLocation.getLatitude() + "," + currentLocation.getLongitude() +
                         "&format=png" +
                         "&zoom=16" +
-                        "&size=600x300" +
+                        "&size=600x600" +
                         "&maptype=road" +
                         "&key="+googleAPIKey +
                         "&style=feature:poi|visibility:off" +
@@ -188,8 +230,6 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
                         "&style=feature:road|visibility:simplified" +
                         "&style=feature:transit|visibility:off";
 
-                int _mapButton_width = mMapButton.getWidth();
-                int _mapButton_height = mMapButton.getHeight();
 
                 Picasso
                         .with(getActivity())
@@ -224,55 +264,67 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
 
     //
     public void setupMapButtonGeocoding() throws IOException {
+//
+//        String _url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+currentLocation.getLatitude()+","+currentLocation.getLongitude()+"&key="+googleAPIKey;
+//
+//        final String[] tempStrings = {"", ""};
+//        final TextView mMapButtonTitle = this.rootView.findViewById(R.id.main_this_area_mapbutton_title);
+//        final TextView mMapButtonSubtitle = this.rootView.findViewById(R.id.main_this_area_mapbutton_subtitle);
+//
+//        doOkHTTPRequestCall(_url, new Callback() {
+//
+//            @Override
+//            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//
+//                if (response.isSuccessful()) {
+//
+//                    // Got geocoding data, will process into Object
+//                    String _data= response.body().string();
+//                    try {
+//
+//                        JSONObject reader = new JSONObject(_data);
+//
+//
+//                        tempStrings[0] = (reader.getJSONArray("results").getJSONObject(0).getString("formatted_address"));
+//                        tempStrings[1] = (
+//                                String.valueOf(reader.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat"))
+//                                        + ", "+
+//                                String.valueOf(reader.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng"))
+//                        );
+//
+//                        MainActivity.this.runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                //Handle UI here
+//                                findViewById(R.id.loading).setVisibility(View.GONE);
+//                            }
+//                        });
+//
+//
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//
+//                } else {
+//                    // Request not successful
+//                }
+//
+//            }
+//
+//        });
 
-        String _url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key="+googleAPIKey;
-
-        final String[] tempStrings = {"", ""};
-        final TextView mMapButtonTitle = this.rootView.findViewById(R.id.main_this_area_mapbutton_title);
-        final TextView mMapButtonSubtitle = this.rootView.findViewById(R.id.main_this_area_mapbutton_subtitle);
-
-        doOkHTTPRequestCall(_url, new Callback() {
-
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-
-                if (response.isSuccessful()) {
-
-                    // Got geocoding data, will process into Object
-                    String _data= response.body().string();
-                    try {
-
-                        JSONObject reader = new JSONObject(_data);
 
 
-                        tempStrings[0] = (reader.getJSONArray("results").getJSONObject(0).getString("formatted_address"));
-                        tempStrings[1] = (
-                                String.valueOf(reader.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat"))
-                                        + ", "+
-                                String.valueOf(reader.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng"))
-                        );
+        mMapButtonTitle.setText("");
+        mMapButtonSubtitle.setText("53.471756, -2.238803 (10 metre)");
 
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-                } else {
-                    // Request not successful
-                }
-
-            }
-
-        });
-
-        mMapButtonTitle.setText(tempStrings[0]);
-        mMapButtonSubtitle.setText(tempStrings[1]);
 
 
     }

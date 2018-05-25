@@ -26,4 +26,5 @@
     <string name="drawer_item_feedback">Donnez votre avis</string>
     <string name="drawer_item_about">Au sujet de GeoChat</string>
     <string name="drawer_item_settings">Paramètres de l\'application</string>
+    <string name="api_message_404">Les serveurs GeoChat ne peuvent pas être contactés en ce moment. Merci d\'essayer plus tard...</string>
 </resources>

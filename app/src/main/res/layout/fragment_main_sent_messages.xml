@@ -16,12 +16,12 @@
     android:layout_height="match_parent"
     tools:context="co.martinshaw.apps.android.geochat.MainSentMessagesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ListView
+        android:id="@+id/main_sent_messages_messagelist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="The 'Sent Messages' feature is coming soon..."
-        android:textSize="18sp" />
+        >
+
+    </ListView>
 
 </FrameLayout>

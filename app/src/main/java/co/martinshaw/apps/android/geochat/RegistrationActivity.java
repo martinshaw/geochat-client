@@ -90,11 +90,20 @@ public class RegistrationActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_registration);
         prefs = this.getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
 
+
+        // Checks for network connection. If none found, force quit application
+        networkCheck();
+
+
         // Setup API Service
         /*
         *  MOVE API SETUP CODE FROM API URL DIALOG EVENT TO HERE IN PRODUCTION
         * */
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
         retrofit = new Retrofit.Builder()
+                .client(client)
                 .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001"))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -163,6 +172,8 @@ public class RegistrationActivity extends AppCompatActivity implements
 
 
 
+
+
     public void setupRegistrationBottomSheet(AppCompatActivity context){
 
         // get the bottom sheet view
@@ -179,9 +190,7 @@ public class RegistrationActivity extends AppCompatActivity implements
         findViewById(R.id.regist_bottomsheet_form_createaccount_button).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-
-                        createUserAccountAndProceed();
+                    public void onClick(View v) { createUserAccountAndProceed();
 
                     }
                 }
@@ -191,7 +200,7 @@ public class RegistrationActivity extends AppCompatActivity implements
         findViewById(R.id.regist_bottomsheet_form_signin_button).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) { signinUserAccountAndProceed(); }
+                    public void onClick(View v) { showSigninDialog(); }
                 }
         );
 
@@ -200,102 +209,164 @@ public class RegistrationActivity extends AppCompatActivity implements
 
 
 
+
+
+
+
     public void activateBottomSheet(){
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
 
+
+
+
+
+
     public void createUserAccountAndProceed(){
 
-        Toast.makeText(getApplicationContext(), "Creating a GeoChat account from this app is not yet available!", Toast.LENGTH_LONG).show();
+        MaterialEditText _first_name = findViewById(R.id.regist_bottomsheet_form_firstname);
+        MaterialEditText _last_name = findViewById(R.id.regist_bottomsheet_form_lastname);
+        MaterialEditText _email_address = findViewById(R.id.regist_bottomsheet_form_email);
+        final MaterialEditText _password = findViewById(R.id.regist_bottomsheet_form_password);
 
-    }
+//        Toast.makeText(getApplicationContext(), "Creating a GeoChat account from this app is not yet available!", Toast.LENGTH_LONG).show();
 
+        final User _user = new User();
+        _user.first_name = _first_name.getText().toString();
+        _user.last_name = _last_name.getText().toString();
+        _user.email_address = _email_address.getText().toString();
+        _user.password = _password.getText().toString();
 
-    public void signinUserAccountAndProceed(){
-        // Check Internet Connection
-        if (!isNetworkConnected()) {
+        Call<GeochatAPIResponse> signInRequest = service.createUserAccount(
+                _user.email_address,
+                _user.password,
+                _user.first_name,
+                _user.last_name
+        );
+        signInRequest.enqueue(new Callback<GeochatAPIResponse>() {
+            @Override
+            public void onResponse(Call<GeochatAPIResponse> call, Response<GeochatAPIResponse> response) {
+                if (response.code() == 200) {
 
+                    if (response.body().getErrorMsg() != null) {
+                        Toast.makeText(RegistrationActivity.this, response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
+                    } else {
 
-            Toast.makeText(this, R.string.error_network_connection, Toast.LENGTH_SHORT).show();
+                        // sign in
+                        signinUserAccount(_user.email_address, _user.password);
 
+                    }
 
-        } else {
+                } else {
 
-            // Show Sign-in dialog
-            LayoutInflater li = LayoutInflater.from(this);
-            View prompt = li.inflate(R.layout.dialog_signin, null);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setView(prompt);
-            final EditText _email = (EditText) prompt.findViewById(R.id.signin_email);
-            final EditText _pass = (EditText) prompt.findViewById(R.id.signin_password);
-            alertDialogBuilder.setTitle("Sign in with existing account...");
-            alertDialogBuilder.setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id)
-                        {
-
-                            // Attempt to communicate with API Service. Using Sign In function to receive Session Key
-                            // onFailure will be triggered if no .data object is received (in case of !200 response), just in case, check for !200 .status code in onResponse function too
-                            Call<GeochatAPIResponse<UserSession>> signInRequest = service.signInUserAccount(_email.getText().toString(), _pass.getText().toString());
-                            signInRequest.enqueue(new Callback<GeochatAPIResponse<UserSession>>() {
-                                @Override
-                                public void onResponse(Call<GeochatAPIResponse<UserSession>> call, Response<GeochatAPIResponse<UserSession>> response) {
-                                    if (response.body().getErrorMsg() != null) {
-                                        Toast.makeText(RegistrationActivity.this, response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        UserSession usersession = response.body().getData();
-                                        Log.i("GEOCHAT_INFO_API", "Geochat API Session Key received: " + usersession.session.session_key);
-                                        Log.i("GEOCHAT_INFO_API", "Geochat API User signed in: " + usersession.user.first_name + " " + usersession.user.last_name + "  id: " + usersession.user.id);
-
-                                        if (usersession.session.session_key != null) {
-                                            prefs.edit().putBoolean("isSignedIn", true).apply();
-                                            prefs.edit().putString("sessionKey", usersession.session.session_key).apply();
-                                            Toast.makeText(RegistrationActivity.this, "Welcome " + usersession.user.first_name + "!", Toast.LENGTH_SHORT).show();
-
-                                            // Dummy: Move screen to MainActivity
-                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<GeochatAPIResponse<UserSession>> call, Throwable t) {
-                                    Log.i("Failure", t.toString());
-                                    Toast.makeText(RegistrationActivity.this, R.string.error_signin, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                        }
-                    });
-
-            alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id)
-                {
-                    dialog.cancel();
+                    Toast.makeText(getApplicationContext(), R.string.api_message_404, Toast.LENGTH_SHORT).show();
 
                 }
-            });
+            }
 
-            alertDialogBuilder.show();
+            @Override
+            public void onFailure(Call<GeochatAPIResponse> call, Throwable t) {
+                Log.i("Failure", t.toString());
+                Toast.makeText(RegistrationActivity.this, R.string.api_message_createaccount, Toast.LENGTH_SHORT).show();
+            }
+        });
 
-
-            // Check form inputs validated
-//            MaterialEditText mEmailAddressTextBox = (MaterialEditText) findViewById(R.id.regist_bottomsheet_form_email);
-//            MaterialEditText mPasswordTextBox = (MaterialEditText) findViewById(R.id.regist_bottomsheet_form_password);
-//            String inputed_email_address = (String) mEmailAddressTextBox.getText().toString();
-//            String inputed_password = (String) mPasswordTextBox.getText().toString();
-
-
-
-            
-        }
     }
+
+
+
+
+
+
+    public void showSigninDialog(){
+
+        // Show Sign-in dialog
+        LayoutInflater li = LayoutInflater.from(this);
+        View prompt = li.inflate(R.layout.dialog_signin, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setView(prompt);
+        final EditText _email = (EditText) prompt.findViewById(R.id.signin_email) ;
+        final EditText _pass = (EditText) prompt.findViewById(R.id.signin_password);
+        alertDialogBuilder.setTitle("Sign in with existing account...");
+        alertDialogBuilder.setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+
+                    signinUserAccount(_email.getText().toString(), _pass.getText().toString());
+
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id)
+            {
+                dialog.cancel();
+
+            }
+        });
+
+        alertDialogBuilder.show();
+
+    }
+
+
+
+
+
+
+    public void signinUserAccount(String _email, String _pass){
+
+        // Attempt to communicate with API Service. Using Sign In function to receive Session Key
+        Call<GeochatAPIResponse<UserSession>> signInRequest = service.signInUserAccount(_email, _pass);
+        signInRequest.enqueue(new Callback<GeochatAPIResponse<UserSession>>() {
+            @Override
+            public void onResponse(Call<GeochatAPIResponse<UserSession>> call, Response<GeochatAPIResponse<UserSession>> response) {
+                if (response.code() == 200) {
+
+                    if (response.body().getErrorMsg() != null) {
+                        Toast.makeText(RegistrationActivity.this, response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        UserSession usersession = response.body().getData();
+                        Log.i("GEOCHAT_INFO_API", "Geochat API Session Key received: " + usersession.session.session_key);
+                        Log.i("GEOCHAT_INFO_API", "Geochat API User signed in: " + usersession.user.first_name + " " + usersession.user.last_name + "  id: " + usersession.user.id);
+
+                        if (usersession.session.session_key != null) {
+                            prefs.edit().putBoolean("isSignedIn", true).apply();
+                            prefs.edit().putString("sessionKey", usersession.session.session_key).apply();
+                            Toast.makeText(RegistrationActivity.this, "Welcome " + usersession.user.first_name + "!", Toast.LENGTH_SHORT).show();
+
+                            // Dummy: Move screen to MainActivity
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                    }
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(), R.string.api_message_404, Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GeochatAPIResponse<UserSession>> call, Throwable t) {
+                Log.i("Failure", t.toString());
+                Toast.makeText(RegistrationActivity.this, R.string.api_message_signin, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+
+
+
+
 
 
     @Override
@@ -314,6 +385,26 @@ public class RegistrationActivity extends AppCompatActivity implements
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
     }
+
+
+
+
+
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        networkCheck();
+
+    }
+
+
+
+
+
 
 
 
@@ -360,10 +451,33 @@ public class RegistrationActivity extends AppCompatActivity implements
 
 
 
-    private boolean isNetworkConnected() {
+    private boolean networkCheck() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null;
+        if (cm.getActiveNetworkInfo() == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.error_network_connection)
+                    .setCancelable(false)
+                    .setPositiveButton("Exit...", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            finish();
+                            System.exit(0);
+
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+
+            return false;
+
+        } else {
+
+            return true;
+
+        }
     }
+
 
 
 

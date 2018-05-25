@@ -19,8 +19,6 @@
     <string name="regist_welcomeinfo_2_title">What is GeoChat?</string>
     <string name="regist_welcomeinfo_2_paragraph">Send and receive messages from people nearby. From your office to your home, from your street to your neighbourhood…</string>
 
-    <string name="error_network_connection">You must be connected to the internet to access GeoChat</string>
-    <string name="error_signin">An error has occurred while attempting to sign-in!</string>
 
     <string name="title_activity_map">Map</string>
     <string name="map_hint">Use the zoom buttons below to select the radius around your current location…</string>
@@ -31,5 +29,10 @@
     <string name="drawer_section_about">About the app</string>
     <string name="drawer_item_feedback">Give Feedback</string>
     <string name="drawer_item_about">About GeoChat</string>
+
+    <string name="error_network_connection">You must be connected to the internet to access GeoChat</string>
+    <string name="api_message_signin">An error has occurred while attempting to sign-in!</string>
+    <string name="api_message_createaccount">An error has occurred while attempting to sign-in!</string>
+    <string name="api_message_404">GeoChat servers cannot be reached right now. Please try later…</string>
 
 </resources>

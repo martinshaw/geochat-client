@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -44,6 +45,7 @@ import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -75,6 +77,7 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
     public LinearLayout mMapButton;
     public TextView mMapButtonTitle;
     public TextView mMapButtonSubtitle;
+
 
 
 
@@ -121,7 +124,11 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
         mainActivity = (MainActivity) getActivity();
 
 
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
         retrofit = new Retrofit.Builder()
+                .client(client)
                 .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001"))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -149,7 +156,7 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
 
 
         // Setup MessageList
-//        setupMessageListView();
+        setupMessageListView();
 
 
 
@@ -160,32 +167,50 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
 
 
 
-//
-//    public void setupMessageListView(){
-//        List<Message> messages;
-//        ListView mMessageList = rootView.findViewById(R.id.main_this_area_messagelist);
-//
-//        retrofit2.Call<GeochatAPIResponse<List<Message>>> messagesReq = service.getAllMessages(prefs.getString("sessionKey", ""));
-//        messagesReq.enqueue(new retrofit2.Callback<GeochatAPIResponse<List<Message>>>() {
-//            @Override
-//            public void onResponse(retrofit2.Call<GeochatAPIResponse<List<Message>>> call, retrofit2.Response<GeochatAPIResponse<List<Message>>> response) {
-//                if (response.body().getErrorMsg() != null) {
-////                    Toast.makeText(getApplicationContext(), response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
-//                } else {
-//
-//                    Log.e("FMEOEMF", response.body())
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(retrofit2.Call<GeochatAPIResponse<List<Message>>> call, Throwable t) {
-//                Log.i("Failure", t.toString());
-////                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//    }
+
+    public void setupMessageListView(){
+
+        retrofit2.Call<GeochatAPIResponse<List<Message>>> messagesReq = service.getAllMessages(prefs.getString("sessionKey", ""));
+        messagesReq.enqueue(new retrofit2.Callback<GeochatAPIResponse<List<Message>>>() {
+            @Override
+            public void onResponse(retrofit2.Call<GeochatAPIResponse<List<Message>>> call, retrofit2.Response<GeochatAPIResponse<List<Message>>> response) {
+                if (response.code() == 200) {
+
+                    if (response.body().getErrorMsg() != null) {
+                        Toast.makeText(getActivity(), response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        processMessagesIntoListView(response.body().getData());
+
+                    }
+
+                } else {
+
+                    Toast.makeText(getActivity(), R.string.api_message_404, Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<GeochatAPIResponse<List<Message>>> call, Throwable t) {
+                Log.i("Failure", t.toString());
+                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+
+
+
+
+    public void processMessagesIntoListView(List<Message> _messages){
+
+        ListView mMessageList = rootView.findViewById(R.id.main_this_area_messagelist);
+
+        mMessageList.setAdapter(new ThisAreaMessageListAdaptor(getContext(), _messages));
+
+    }
 
 
 
@@ -214,6 +239,7 @@ public class MainThisAreaFragment extends android.support.v4.app.Fragment {
     public double getCurrentRadius() {
         return Double.longBitsToDouble(prefs.getLong("locationRadius", 0));
     }
+
 
 
 

@@ -59,7 +59,8 @@
         <ListView
             android:id="@+id/main_this_area_messagelist"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
         </ListView>
 

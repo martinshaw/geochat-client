@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ message_thumbnail_shape.xml
+  ~ C:/Users/martin/Android_Projects/GeoChat/app/src/main/res/drawable/message_thumbnail_shape.xml
+  ~
+  ~ Project: GeoChat
+  ~ Module: app
+  ~ Last Modified: 25/05/18 02:26 <martin>
+  ~ Last Compilation: 25/05/18 02:26
+  ~
+  ~ Copyright (c) 2018. Martin David Shaw. All rights reserved.
+  -->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:innerRadius="0dp"
+    android:shape="ring"
+    android:thicknessRatio="1.9"
+    android:useLevel="false"
+    android:tint="@color/md_white_1000">
+    <!--<solid android:color="#FFFFFF" />-->
+</shape>

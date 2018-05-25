@@ -26,4 +26,5 @@
     <string name="drawer_item_feedback">给予反馈</string>
     <string name="drawer_item_about">关于 GeoChat</string>
     <string name="drawer_item_settings">应用程序的设置</string>
+    <string name="api_message_404">GeoChat 服务器现在无法联系到。 请稍后再试...</string>
 </resources>

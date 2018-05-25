@@ -14,6 +14,7 @@ package co.martinshaw.apps.android.geochat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -22,6 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -38,6 +40,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -59,6 +62,8 @@ import java.util.List;
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -107,11 +112,18 @@ public class MainActivity extends AppCompatActivity implements
         this.prefs = this.getSharedPreferences("co.martinshaw.apps.android.geochat", Context.MODE_PRIVATE);
 
 
-        // Setup and configure Retrofit
+        // Checks for network connection. If none found, force quit application
+        networkCheck();
 
+
+        // Setup and configure Retrofit
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(prefs.getString("apiUrl", "http://192.169.159.139:8001"))
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
                 .build();
         service = retrofit.create(GeochatAPIService.class);
 
@@ -172,13 +184,19 @@ public class MainActivity extends AppCompatActivity implements
         userRequest.enqueue(new Callback<GeochatAPIResponse<User>>() {
             @Override
             public void onResponse(Call<GeochatAPIResponse<User>> call, Response<GeochatAPIResponse<User>> response) {
-                if (response.body().getErrorMsg() != null) {
-                    Toast.makeText(getApplicationContext(), response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
+                if (response.code() == 200) {
+                    if (response.body().getErrorMsg() != null) {
+                        Toast.makeText(getApplicationContext(), response.body().getErrorMsg(), Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        user = response.body().getData();
+
+                        insertUserSpecificLabels();
+
+                    }
                 } else {
 
-                    user = response.body().getData();
-
-                    insertUserSpecificLabels();
+                    Toast.makeText(self, R.string.api_message_404, Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -525,54 +543,50 @@ public class MainActivity extends AppCompatActivity implements
                         "json_survey",
                         "{\n" +
                                 "  \"survey_properties\": {\n" +
-                                "    \"intro_message\": \"<strong>Your feedback helps us to build a better mobile product.</strong><br><br><br>   Hello, Feedback from our clients, friends and family is how we make key decisions on what the future holds for XYZ App.<br><br>By combining data and previous feedback we have introduced many new features e.g. x, y, z.<br><br>It will take less than 2 minutes to answer the feedback quiz.\",\n" +
-                                "    \"end_message\": \"Thank you for having the time to take our survey.\",\n" +
+                                "    \"intro_message\": \"<strong>Your feedback helps us to build a better GeoChat platform.</strong><br><br><br>It will take less than 2 minutes to answer the feedback quiz.\",\n" +
+                                "    \"end_message\": \"Thank you for giving the time to take our survey.\",\n" +
                                 "    \"skip_intro\": false\n" +
                                 "  },\n" +
                                 "  \"questions\": [\n" +
                                 "    {\n" +
-                                "      \"question_type\": \"Checkboxes\",\n" +
-                                "      \"question_title\": \"What were you hoping the XYZ mobile app would do?\",\n" +
-                                "      \"description\": \"(Select all that apply)\",\n" +
-                                "      \"required\": false,\n" +
+                                "      \"question_type\": \"Radioboxes\",\n" +
+                                "      \"question_title\": \"Will you continue to use the GeoChat service?\",\n" +
+                                "      \"description\": \"\",\n" +
+                                "      \"required\": true,\n" +
                                 "      \"random_choices\": false,\n" +
                                 "      \"choices\": [\n" +
-                                "        \"thing #1\",\n" +
-                                "        \"thing #2\",\n" +
-                                "        \"thing #3\",\n" +
-                                "        \"thing #4\"\n" +
+                                "        \"Yes\",\n" +
+                                "        \"No\",\n" +
+                                "        \"Maybe\"\n" +
                                 "      ]\n" +
-                                "    },\n" +
-                                "    {\n" +
-                                "      \"question_type\": \"Checkboxes\",\n" +
-                                "      \"question_title\": \"Do you currently use one of these other software solutions?\",\n" +
-                                "      \"description\": \"\",\n" +
-                                "      \"required\": false,\n" +
-                                "      \"random_choices\": true,\n" +
-                                "      \"choices\": [\n" +
-                                "        \"<font color='#AA0000'>Yes, I use a <strong>red</strong> product</font>\",\n" +
-                                "        \"I use a <font color='#00AA00'>green product</font>\",\n" +
-                                "        \"I partialy use a <font color='#0000AA'><strong>blue</strong></font> product\"\n" +
-                                "      ]\n" +
-                                "    },\n" +
-                                "    {\n" +
-                                "      \"question_type\": \"String\",\n" +
-                                "      \"question_title\": \"Why did you not subscribe at the end of your free trial ?\",\n" +
-                                "      \"description\": \"\",\n" +
-                                "      \"required\": false\n" +
-                                "    },\n" +
-                                "    {\n" +
-                                "      \"question_title\": \"If this app was paid, how much you would give to have it ?\",\n" +
-                                "      \"description\": \"\",\n" +
-                                "      \"required\": false,\n" +
-                                "      \"question_type\": \"Number\"\n" +
                                 "    },\n" +
                                 "    {\n" +
                                 "      \"question_type\": \"StringMultiline\",\n" +
-                                "      \"question_title\": \"We love feedback and if there is anything else you’d like us to improve please let us know.\",\n" +
+                                "      \"question_title\": \"Has the GeoChat crashed or acted bizarrely while you have been using it?\",\n" +
                                 "      \"description\": \"\",\n" +
                                 "      \"required\": false,\n" +
-                                "      \"number_of_lines\": 4\n" +
+                                "      \"number_of_lines\": 3\n" +
+                                "    },\n" +
+                                "    {\n" +
+                                "      \"question_type\": \"StringMultiline\",\n" +
+                                "      \"question_title\": \"Did you have any technical problems using the app?\",\n" +
+                                "      \"description\": \"\",\n" +
+                                "      \"required\": false,\n" +
+                                "      \"number_of_lines\": 3\n" +
+                                "    },\n" +
+                                "    {\n" +
+                                "      \"question_type\": \"StringMultiline\",\n" +
+                                "      \"question_title\": \"How would you improve the GeoChat app?\",\n" +
+                                "      \"description\": \"\",\n" +
+                                "      \"required\": false,\n" +
+                                "      \"number_of_lines\": 3\n" +
+                                "    },\n" +
+                                "    {\n" +
+                                "      \"question_type\": \"StringMultiline\",\n" +
+                                "      \"question_title\": \"How might this GeoChat become useful to your day-to-day life?\",\n" +
+                                "      \"description\": \"\",\n" +
+                                "      \"required\": false,\n" +
+                                "      \"number_of_lines\": 3\n" +
                                 "    }\n" +
                                 "  ]\n" +
                                 "}"
@@ -659,8 +673,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-//        Toast.makeText(this, "Resuming Geolocation", Toast.LENGTH_SHORT).show();
 
+        networkCheck();
 
     }
 
@@ -755,6 +769,39 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
+    }
+
+
+
+
+
+
+
+    private boolean networkCheck() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm.getActiveNetworkInfo() == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.error_network_connection)
+                    .setCancelable(false)
+                    .setPositiveButton("Exit...", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            finish();
+                            System.exit(0);
+
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+
+            return false;
+
+        } else {
+
+            return true;
+
+        }
     }
 
 
